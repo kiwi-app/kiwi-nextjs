@@ -13,6 +13,9 @@
   "bin": {
     "kiwi": "src/cli/index.js"
   },
+  "browser": {
+    "child_process": false
+  },
   "author": "Kiwi",
   "license": "MIT",
   "dependencies": {
