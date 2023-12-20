@@ -1,6 +1,7 @@
 const path = require('path');
 const { writeFileSync, mkdirSync } = require('fs');
 const { execSync } = require('child_process');
+const manifest = require('./manifest');
 
 module.exports = function (args) {
   console.log('args:', args?.join(','));
@@ -70,10 +71,53 @@ module.exports = function (args) {
     execSync(`npx prettier '${API_PATH}/route.ts' --write`);
   };
 
+  const updateTsConfig = () => {
+    let newTsConfig;
+    const tsConfigRoot = path.resolve();
+
+    try {
+      const configFile = require(`${tsConfigRoot}/tsconfig.json`);
+
+      if (configFile.compilerOptions) {
+        configFile.compilerOptions.paths = {
+          ...configFile.compilerOptions.paths,
+          '@manifest': ['./manifest.ts'],
+        };
+      } else {
+        configFile['compilerOptions'] = {
+          paths: {
+            '@manifest': ['./manifest.ts'],
+          },
+        };
+      }
+
+      newTsConfig = { ...configFile };
+    } catch (_) {
+      newTsConfig = {
+        compilerOptions: {
+          paths: {
+            '@manifest': ['./manifest.ts'],
+          },
+        },
+      };
+    }
+
+    writeFileSync(`${tsConfigRoot}/tsconfig.json`, JSON.stringify(newTsConfig), {
+      encoding: 'utf-8',
+    });
+    execSync(`npx prettier '${tsConfigRoot}/tsconfig.json' --write`);
+  };
+
+  manifest();
+
+  console.log('Configuring manifest alias');
+  updateTsConfig();
+
+  console.log('Creating folder structure!');
   createKiwiFolder();
   createKiwiLiveFiles();
   createKiwiServerFiles();
   createKiwiRouteFiles();
 
-  console.log('Files created!');
+  console.log('Folders created!');
 };
