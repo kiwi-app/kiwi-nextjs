@@ -1,9 +1,9 @@
 import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
-import { Manifest, LiveEditorMessage, Page, Schema, ExportedModule, LoaderRequest } from '../types';
+import { Manifest, LiveEditorMessage, Page, ExportedModule, LoaderRequest } from '../types';
 import internalManifest from '../../manifest';
 import getSupabaseClient from '../database';
 
-const KIWI_ADMIN_URL = process.env.KIWI_ADMIN_URL || process.env.NEXT_PUBLIC_ADMIN_URL;
+const KIWI_ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL;
 
 export type EventData = {
   [key: string]: any;
@@ -81,7 +81,7 @@ export async function getLoaderProps(
 
 export const getPageConfig = async (site: string, page: string): Promise<Page | null> => {
   if (!KIWI_ADMIN_URL) throw 'kiwi admin url must be informed';
-  
+
   try {
     const request = await fetch(
       `${KIWI_ADMIN_URL}/api/sites/${site}/page?page=${page.replace('/kiwi/live/', '')}`,

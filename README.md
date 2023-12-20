@@ -5,6 +5,14 @@ This project contains a CLI with two actions:
 - `kiwi init`: configures folders and behaviors to integrate with admin app
 - `kiwi manifest`: generates a manifest file which contains all sections and loaders created locally in your project which will be displayed through the "CatchAll" component and used by **kiwi admin** to display your sections and loaders with their props.
 
+## Configuration
+
+You should configure this lib by creating the following env vars:
+
+- NEXT_PUBLIC_KIWI_SUPABASE_URL
+- NEXT_PUBLIC_KIWI_SUPABASE_ANON_KEY
+- NEXT_PUBLIC_ADMIN_URL
+
 ## Sections
 
 Kiwi admin uses your manifest sections (sections folder) to build pages.
