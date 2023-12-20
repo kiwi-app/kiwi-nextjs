@@ -99,7 +99,15 @@ module.exports = function (args) {
     loaders: [],
   };
 
-  const sections = readdirSync(`${root}/src/sections`);
+  let sections = [];
+  try {
+    sections = readdirSync(`${root}/src/sections`);
+  } catch (_) {}
+
+  let loaders = [];
+  try {
+    loaders = readdirSync(`${root}/src/loaders`);
+  } catch (_) {}
 
   sections.forEach(function (file) {
     serviceMap.sections.push({
@@ -108,7 +116,6 @@ module.exports = function (args) {
     });
   });
 
-  const loaders = readdirSync(`${root}/src/loaders`);
   loaders.forEach(function (file) {
     const { loader } = createPropSchema(`${root}/src/loaders/${file}`, true);
 
