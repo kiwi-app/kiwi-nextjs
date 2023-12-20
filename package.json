@@ -10,6 +10,9 @@
   "scripts": {
     "rollup": "rm -rf dist; rollup -c --bundleConfigAsCjs"
   },
+  "bin": {
+    "kiwi": "shared/src/cli/index.js"
+  },
   "author": "Kiwi",
   "license": "MIT",
   "devDependencies": {
