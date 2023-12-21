@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import {
   getLoaderProps,
@@ -9,11 +11,16 @@ import {
 import { Manifest, LiveEditorMessage, Page, LoaderRequest } from '../types';
 
 export type CatchAllLiveProps = {
+  page: Page;
   requestInfo: LoaderRequest;
   manifest: Manifest;
 };
 
-export default function CatchAllLive({ requestInfo, manifest }: CatchAllLiveProps) {
+export default function CatchAllLive({
+  page: firstPage,
+  requestInfo,
+  manifest,
+}: CatchAllLiveProps) {
   const [page, setPage] = useState<Page>();
   const [liveEditing, setLiveEditing] = useState<boolean>(false);
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
@@ -21,6 +28,7 @@ export default function CatchAllLive({ requestInfo, manifest }: CatchAllLiveProp
   const [completeLoaders, setCompleteLoaders] = useState(false);
 
   useEffect(() => {
+    console.log('firstPage', firstPage);
     const path = window.location.pathname;
 
     getPageConfig(manifest.site, path).then((page) => {
