@@ -2,7 +2,7 @@
   "name": "kiwi-nexjs",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "dist/cjs/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
