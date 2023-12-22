@@ -4,4 +4,4 @@ export type CatchAllProps = {
         kiwi: string[];
     };
 };
-export default function KiwiCatchAll(manifest: any, live?: boolean): ({ params: { kiwi } }: CatchAllProps) => React.JSX.Element;
+export default function KiwiCatchAll(manifest: any, live?: boolean): ({ params: { kiwi } }: CatchAllProps) => Promise<React.JSX.Element | null>;

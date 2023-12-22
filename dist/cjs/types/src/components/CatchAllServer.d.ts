@@ -1,8 +1,7 @@
 import React from 'react';
-import { LoaderRequest, Manifest } from '../types';
+import { Manifest, Page } from '../types';
 export type CatchAllServerProps = {
-    requestInfo: LoaderRequest;
+    page: Page;
     manifest: Manifest;
-    kiwi: string;
 };
-export default function CatchAllServer({ requestInfo, manifest, kiwi }: CatchAllServerProps): Promise<React.JSX.Element | null>;
+export default function CatchAllServer({ page, manifest }: CatchAllServerProps): Promise<React.JSX.Element>;

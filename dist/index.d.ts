@@ -1,6 +1,6 @@
 /// <reference types="react" />
-import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
+import { NextRequest, NextResponse } from 'next/server';
 
 type Page = {
     id: string;
@@ -61,21 +61,22 @@ type Manifest = {
     baseUrl: string;
 };
 
-type CatchAllServerProps = {
-    requestInfo: LoaderRequest;
-    manifest: Manifest;
-    kiwi: string;
-};
-
 type CatchAllLiveProps = {
     requestInfo: LoaderRequest;
     manifest: Manifest;
 };
+declare function CatchAllLive({ requestInfo, manifest }: CatchAllLiveProps): React.JSX.Element | null;
 
 type CatchAllProps = {
     params: {
         kiwi: string[];
     };
+};
+declare function KiwiCatchAll(manifest: any, live?: boolean): ({ params: { kiwi } }: CatchAllProps) => Promise<React.JSX.Element | null>;
+
+type CatchAllServerProps = {
+    page: Page;
+    manifest: Manifest;
 };
 
 declare function LiveRoute(manifest: any): {
@@ -108,4 +109,4 @@ type EventData = {
     [key: string]: any;
 };
 
-export { CatchAllLiveProps, CatchAllProps, CatchAllServerProps, EventData, LiveEditorMessage, LiveRoute, LoaderRequest, Manifest, Page, RichText, RichTextComponent, RichTextComponentProps, Schema, SchemaProperty };
+export { KiwiCatchAll as CatchAll, CatchAllLive, CatchAllLiveProps, CatchAllProps, CatchAllServerProps, EventData, LiveEditorMessage, LiveRoute, LoaderRequest, Manifest, Page, RichText, RichTextComponent, RichTextComponentProps, Schema, SchemaProperty };
