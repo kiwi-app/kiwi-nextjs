@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import {
   getLoaderProps,
@@ -64,6 +66,8 @@ export default function CatchAllLive({ requestInfo, manifest }: CatchAllLiveProp
         sectionModule,
         manifest,
       );
+
+      console.log('finished', page.sections[idx].props);
     }
 
     setCompleteLoaders(true);

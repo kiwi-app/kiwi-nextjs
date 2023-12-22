@@ -15,6 +15,8 @@ export default function KiwiCatchAll(manifest: any, live: boolean = false) {
       headers: {},
     };
 
+    console.log('kiwi ->', kiwi);
+
     if (!live) {
       cookies()
         .getAll()
