@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { RealtimeChannel } from '@supabase/supabase-js';
 import {
   getLoaderProps,
   listenPageChanges,
@@ -6,7 +7,6 @@ import {
   sendSectionHoverEvent,
 } from '../helpers';
 import { Manifest, LiveEditorMessage, Page, LoaderRequest } from '../types';
-import { RealtimeChannel } from '@supabase/supabase-js';
 
 export type CatchAllClientProps = {
   page: Page;
