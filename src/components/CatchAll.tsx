@@ -4,11 +4,7 @@ import { LoaderRequest } from '../types';
 
 export type CatchAllProps = { params: { kiwi: string[] } };
 
-export default function KiwiCatchAll(
-  manifest: any,
-  ClientComponent: React.JSX.Element,
-  ServerComponent: React.JSX.Element,
-) {
+export default function KiwiCatchAll(manifest: any, ClientComponent: any, ServerComponent: any) {
   return async function CatchAll({ params: { kiwi } }: CatchAllProps) {
     const path = kiwi.join('/');
     const isLive = path.startsWith('kiwi/live');

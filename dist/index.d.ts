@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import * as React$1 from 'react';
+import * as React from 'react';
 import React__default from 'react';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -80,7 +80,7 @@ type CatchAllProps = {
         kiwi: string[];
     };
 };
-declare function KiwiCatchAll(manifest: any, ClientComponent: React.JSX.Element, ServerComponent: React.JSX.Element): ({ params: { kiwi } }: CatchAllProps) => Promise<React$1.JSX.Element | null>;
+declare function KiwiCatchAll(manifest: any, ClientComponent: any, ServerComponent: any): ({ params: { kiwi } }: CatchAllProps) => Promise<React.JSX.Element | null>;
 
 declare function LiveRoute(manifest: any): {
     PATCH: (_: NextRequest, { params: { kiwi } }: {
