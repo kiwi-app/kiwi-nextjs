@@ -3,7 +3,7 @@ import { Manifest, Page } from '../types';
 
 export type CatchAllServerProps = { page: Page; manifest: Manifest };
 
-export default async function CatchAllServer({ page, manifest }: CatchAllServerProps) {
+export default function CatchAllServer({ page, manifest }: CatchAllServerProps) {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="flex flex-col w-full">
@@ -14,7 +14,7 @@ export default async function CatchAllServer({ page, manifest }: CatchAllServerP
 
           if (!Component) return null;
           return (
-            <section key={id} id={id} className="relative">
+            <section key={id} id={id}>
               {/* @ts-ignore */}
               <Component {...section.props} />
             </section>

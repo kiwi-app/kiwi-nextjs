@@ -1,33 +1,35 @@
-import React from 'react';
 import { cookies, headers } from 'next/headers';
 import { getLoaderProps, getPageConfig, mergeManifestSections } from '../helpers';
-import CatchAllLive from './CatchAllLive';
-import CatchAllServer from './CatchAllServer';
 import { LoaderRequest } from '../types';
 
 export type CatchAllProps = { params: { kiwi: string[] } };
 
-export default function KiwiCatchAll(manifest: any, live: boolean = false) {
+export default function KiwiCatchAll(
+  manifest: any,
+  ClientComponent: React.JSX.Element,
+  ServerComponent: React.JSX.Element,
+) {
   return async function CatchAll({ params: { kiwi } }: CatchAllProps) {
+    const path = kiwi.join('/');
+    const isLive = path.startsWith('kiwi/live');
     const mergedManifest = mergeManifestSections(manifest);
-    let requestInfo: LoaderRequest = {
+
+    const requestInfo: LoaderRequest = {
       cookies: {},
       headers: {},
     };
 
-    if (!live) {
-      cookies()
-        .getAll()
-        .forEach(({ value, name }) => {
-          requestInfo.cookies![name] = value;
-        });
-
-      headers().forEach((value, key, _) => {
-        requestInfo.headers![key] = value;
+    cookies()
+      .getAll()
+      .forEach(({ value, name }) => {
+        requestInfo.cookies![name] = value;
       });
-    }
 
-    const page = await getPageConfig(manifest.site, kiwi.join('/'));
+    headers().forEach((value, key, _) => {
+      requestInfo.headers![key] = value;
+    });
+
+    const page = await getPageConfig(manifest.site, path);
     if (!page) return null;
 
     for (let idx = 0; idx < page.sections?.length; idx++) {
@@ -42,9 +44,16 @@ export default function KiwiCatchAll(manifest: any, live: boolean = false) {
       );
     }
 
-    console.log('page', page);
+    const props = {
+      page,
+      requestInfo,
+      manifest: mergedManifest,
+    };
 
-    if (live) return <CatchAllLive requestInfo={requestInfo} manifest={mergedManifest} />;
-    return <CatchAllServer page={page} manifest={mergedManifest} />;
+    // @ts-expect-error
+    if (isLive) return <ClientComponent {...props} />;
+
+    // @ts-expect-error
+    return <ServerComponent {...props} />;
   };
 }

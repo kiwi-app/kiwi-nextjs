@@ -1,5 +1,6 @@
-export { default as CatchAllLive } from './CatchAllLive';
+export { default as CatchAllServer } from './CatchAllServer';
+export { default as CatchAllLive } from './CatchAllClient';
 export { default as CatchAll } from './CatchAll';
 export type { CatchAllServerProps } from './CatchAllServer';
-export type { CatchAllLiveProps } from './CatchAllLive';
+export type { CatchAllClientProps } from './CatchAllClient';
 export type { CatchAllProps } from './CatchAll';

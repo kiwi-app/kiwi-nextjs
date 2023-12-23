@@ -135,3 +135,5 @@ export const listenPageChanges = (
     )
     .subscribe();
 };
+
+export const isLive = (): boolean => typeof window !== 'undefined';

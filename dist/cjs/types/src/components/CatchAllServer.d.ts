@@ -4,4 +4,4 @@ export type CatchAllServerProps = {
     page: Page;
     manifest: Manifest;
 };
-export default function CatchAllServer({ page, manifest }: CatchAllServerProps): Promise<React.JSX.Element>;
+export default function CatchAllServer({ page, manifest }: CatchAllServerProps): React.JSX.Element;

@@ -13,3 +13,4 @@ export declare const mergeManifestSections: (manifest: any) => Manifest;
 export declare const sendSectionHoverEvent: (iframeRef: Window, data: EventData) => void;
 export declare const sendSectionClickEvent: (iframeRef: Window, data: EventData) => void;
 export declare const listenPageChanges: (pageId: string, callback: (payload: RealtimePostgresChangesPayload<Page>) => void) => void;
+export declare const isLive: () => boolean;

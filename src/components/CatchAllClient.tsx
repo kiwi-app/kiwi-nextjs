@@ -1,41 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import {
   getLoaderProps,
-  getPageConfig,
   listenPageChanges,
   sendSectionClickEvent,
   sendSectionHoverEvent,
 } from '../helpers';
 import { Manifest, LiveEditorMessage, Page, LoaderRequest } from '../types';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
-export type CatchAllLiveProps = {
+export type CatchAllClientProps = {
+  page: Page;
   requestInfo: LoaderRequest;
   manifest: Manifest;
 };
 
-export default function CatchAllLive({ requestInfo, manifest }: CatchAllLiveProps) {
+export default function CatchAllClient({
+  page: initialPage,
+  requestInfo,
+  manifest,
+}: CatchAllClientProps) {
   const [page, setPage] = useState<Page>();
   const [liveEditing, setLiveEditing] = useState<boolean>(false);
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>();
-  const [completeLoaders, setCompleteLoaders] = useState(false);
 
   useEffect(() => {
-    const path = window.location.pathname;
-
-    getPageConfig(manifest.site, path).then((page) => {
-      if (!page) return;
-
-      setPage(page);
-      useSectionLoaders(page);
-
-      listenPageChanges(page.id, (payload) => {
-        const newPage = payload.new;
-        setPage(newPage as Page);
-        useSectionLoaders(newPage as Page);
-      });
-    });
-
     let isInsideIframe = false;
 
     try {
@@ -53,6 +42,24 @@ export default function CatchAllLive({ requestInfo, manifest }: CatchAllLiveProp
     };
   }, []);
 
+  useEffect(() => {
+    let channel: RealtimeChannel;
+
+    if (initialPage) {
+      setPage(initialPage);
+
+      listenPageChanges(initialPage.id, (payload) => {
+        const newPage = payload.new;
+        setPage(newPage as Page);
+        useSectionLoaders(newPage as Page);
+      });
+    }
+
+    return () => {
+      channel?.unsubscribe();
+    };
+  }, [initialPage]);
+
   const useSectionLoaders = async (page: Page) => {
     for (let idx = 0; idx < page.sections?.length; idx++) {
       const section = page.sections[idx];
@@ -64,11 +71,7 @@ export default function CatchAllLive({ requestInfo, manifest }: CatchAllLiveProp
         sectionModule,
         manifest,
       );
-
-      console.log('finished', page.sections[idx].props);
     }
-
-    setCompleteLoaders(true);
   };
 
   const onReceiveMessage = (event: MessageEvent<LiveEditorMessage>) => {
@@ -85,8 +88,6 @@ export default function CatchAllLive({ requestInfo, manifest }: CatchAllLiveProp
       setHoveredSectionId(event.data.data.sectionId);
     }
   };
-
-  if (!completeLoaders) return null;
 
   return (
     <div className="flex flex-col items-center justify-center">
