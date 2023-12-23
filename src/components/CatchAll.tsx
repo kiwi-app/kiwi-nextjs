@@ -44,10 +44,9 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
     const props = {
       page,
       requestInfo,
-      manifest: { ...mergedManifest },
     };
 
     if (isLive) return <ClientComponent {...props} />;
-    return <ServerComponent {...props} />;
+    return <ServerComponent {...props} manifest={mergedManifest} />;
   };
 }
