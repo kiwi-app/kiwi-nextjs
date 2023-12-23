@@ -48,7 +48,6 @@ export default (externalManifest: any) =>
 
         listenPageChanges(initialPage.id, (payload) => {
           const newPage = payload.new;
-          setPage(newPage as Page);
           useSectionLoaders(newPage as Page);
         });
       }
@@ -70,6 +69,8 @@ export default (externalManifest: any) =>
           manifest,
         );
       }
+
+      setPage(page);
     };
 
     const onReceiveMessage = (event: MessageEvent<LiveEditorMessage>) => {

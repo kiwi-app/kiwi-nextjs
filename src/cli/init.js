@@ -4,8 +4,6 @@ const { execSync } = require('child_process');
 const manifest = require('./manifest');
 
 module.exports = function (args) {
-  console.log('args:', args?.join(','));
-
   const root = path.resolve('./src/app/');
 
   const SERVER_COMPONENT_PATH = `${root}/(kiwi)/[...kiwi]`;
