@@ -51,7 +51,11 @@ module.exports = function (args) {
     `;
 
     writeFileSync(`${SERVER_COMPONENT_PATH}/client.tsx`, clientCode);
+    execSync(`npx prettier '${SERVER_COMPONENT_PATH}/client.tsx' --write`);
+
     writeFileSync(`${SERVER_COMPONENT_PATH}/server.tsx`, serverCode);
+    execSync(`npx prettier '${SERVER_COMPONENT_PATH}/server.tsx' --write`);
+
     writeFileSync(`${SERVER_COMPONENT_PATH}/page.tsx`, code);
     execSync(`npx prettier '${SERVER_COMPONENT_PATH}/page.tsx' --write`);
   };
@@ -114,7 +118,6 @@ module.exports = function (args) {
 
   console.log('Creating folder structure!');
   createKiwiFolder();
-  createKiwiLiveFiles();
   createKiwiServerFiles();
   createKiwiRouteFiles();
 

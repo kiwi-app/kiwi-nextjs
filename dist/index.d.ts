@@ -112,4 +112,4 @@ type EventData = {
     [key: string]: any;
 };
 
-export { KiwiCatchAll as CatchAll, CatchAllClientProps, CatchAllClient as CatchAllLive, CatchAllProps, CatchAllServer, CatchAllServerProps, EventData, LiveEditorMessage, LiveRoute, LoaderRequest, Manifest, Page, RichText, RichTextComponent, RichTextComponentProps, Schema, SchemaProperty };
+export { KiwiCatchAll as CatchAll, CatchAllClient, CatchAllClientProps, CatchAllProps, CatchAllServer, CatchAllServerProps, EventData, LiveEditorMessage, LiveRoute, LoaderRequest, Manifest, Page, RichText, RichTextComponent, RichTextComponentProps, Schema, SchemaProperty };
