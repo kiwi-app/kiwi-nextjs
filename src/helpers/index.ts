@@ -84,7 +84,7 @@ export const getPageConfig = async (site: string, page: string): Promise<Page | 
 
   try {
     const request = await fetch(
-      `${KIWI_ADMIN_URL}/api/sites/${site}/page?page=${page.replace('/kiwi/live/', '')}`,
+      `${KIWI_ADMIN_URL}/api/sites/${site}/page?page=${page.replace('kiwi/live/', '')}`,
     );
     const response = await request.json();
 
@@ -94,7 +94,7 @@ export const getPageConfig = async (site: string, page: string): Promise<Page | 
   }
 };
 
-export const mergeManifestSections = (manifest: any): Manifest => {
+export const mergeManifest = (manifest: any): Manifest => {
   return {
     ...manifest,
     sections: {

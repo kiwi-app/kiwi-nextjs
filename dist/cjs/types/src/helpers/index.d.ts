@@ -9,7 +9,7 @@ export declare function getLoaderProps(loaderRequest: LoaderRequest, props: {
     [key: string]: any;
 }>;
 export declare const getPageConfig: (site: string, page: string) => Promise<Page | null>;
-export declare const mergeManifestSections: (manifest: any) => Manifest;
+export declare const mergeManifest: (manifest: any) => Manifest;
 export declare const sendSectionHoverEvent: (iframeRef: Window, data: EventData) => void;
 export declare const sendSectionClickEvent: (iframeRef: Window, data: EventData) => void;
 export declare const listenPageChanges: (pageId: string, callback: (payload: RealtimePostgresChangesPayload<Page>) => void) => void;

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { mergeManifestSections } from '../helpers';
+import { mergeManifest } from '../helpers';
 import { execSync } from 'child_process';
 
 const corsHeaders = {
@@ -21,7 +21,7 @@ export function LiveRoute(manifest: any) {
     },
     GET: (_: NextRequest, { params: { kiwi } }: { params: { kiwi: string[] } }) => {
       if (kiwi.length === 1 && kiwi[0] === 'live') {
-        const mergedManifest = mergeManifestSections(manifest);
+        const mergedManifest = mergeManifest(manifest);
 
         return NextResponse.json(mergedManifest, { headers: corsHeaders });
       }
