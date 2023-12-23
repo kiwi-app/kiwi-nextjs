@@ -7,14 +7,14 @@ import {
   sendSectionClickEvent,
   sendSectionHoverEvent,
 } from '../helpers';
-import { Manifest, LiveEditorMessage, Page, LoaderRequest } from '../types';
+import { LiveEditorMessage, Page, LoaderRequest } from '../types';
 
 export type CatchAllClientProps = {
   page: Page;
   requestInfo: LoaderRequest;
 };
 
-export default (externalManifest: Manifest) =>
+export default (externalManifest: any) =>
   function CatchAllClient({ page: initialPage, requestInfo }: CatchAllClientProps) {
     const [page, setPage] = useState<Page>();
     const [liveEditing, setLiveEditing] = useState<boolean>(false);
