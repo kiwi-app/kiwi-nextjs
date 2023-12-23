@@ -3,24 +3,26 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 import {
   getLoaderProps,
   listenPageChanges,
-  mergeManifestSections,
   sendSectionClickEvent,
   sendSectionHoverEvent,
 } from '../helpers';
-import { LiveEditorMessage, Page, LoaderRequest } from '../types';
+import { Manifest, LiveEditorMessage, Page, LoaderRequest } from '../types';
 
 export type CatchAllClientProps = {
   page: Page;
   requestInfo: LoaderRequest;
+  manifest: Manifest;
 };
 
-export default function CatchAllClient({ page: initialPage, requestInfo }: CatchAllClientProps) {
+export default function CatchAllClient({
+  page: initialPage,
+  requestInfo,
+  manifest,
+}: CatchAllClientProps) {
   const [page, setPage] = useState<Page>();
   const [liveEditing, setLiveEditing] = useState<boolean>(false);
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>();
-
-  const manifest = mergeManifestSections({});
 
   useEffect(() => {
     let isInsideIframe = false;

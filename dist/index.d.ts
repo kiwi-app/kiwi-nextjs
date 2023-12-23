@@ -70,8 +70,9 @@ declare function CatchAllServer({ page, manifest }: CatchAllServerProps): React.
 type CatchAllClientProps = {
     page: Page;
     requestInfo: LoaderRequest;
+    manifest: Manifest;
 };
-declare function CatchAllClient({ page: initialPage, requestInfo }: CatchAllClientProps): React.JSX.Element;
+declare function CatchAllClient({ page: initialPage, requestInfo, manifest, }: CatchAllClientProps): React.JSX.Element;
 
 type CatchAllProps = {
     params: {
