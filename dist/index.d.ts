@@ -70,9 +70,8 @@ declare function CatchAllServer({ page, manifest }: CatchAllServerProps): React.
 type CatchAllClientProps = {
     page: Page;
     requestInfo: LoaderRequest;
-    manifest: Manifest;
 };
-declare function CatchAllClient({ page: initialPage, requestInfo, manifest, }: CatchAllClientProps): React.JSX.Element;
+declare const _default: (externalManifest: Manifest) => ({ page: initialPage, requestInfo }: CatchAllClientProps) => React.JSX.Element;
 
 type CatchAllProps = {
     params: {
@@ -111,4 +110,4 @@ type EventData = {
     [key: string]: any;
 };
 
-export { KiwiCatchAll as CatchAll, CatchAllClient, CatchAllClientProps, CatchAllProps, CatchAllServer, CatchAllServerProps, EventData, LiveEditorMessage, LiveRoute, LoaderRequest, Manifest, Page, RichText, RichTextComponent, RichTextComponentProps, Schema, SchemaProperty };
+export { KiwiCatchAll as CatchAll, _default as CatchAllClient, CatchAllClientProps, CatchAllProps, CatchAllServer, CatchAllServerProps, EventData, LiveEditorMessage, LiveRoute, LoaderRequest, Manifest, Page, RichText, RichTextComponent, RichTextComponentProps, Schema, SchemaProperty };
