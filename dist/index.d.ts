@@ -71,7 +71,7 @@ type CatchAllClientProps = {
     page: Page;
     requestInfo: LoaderRequest;
 };
-declare const _default: (externalManifest: Manifest) => ({ page: initialPage, requestInfo }: CatchAllClientProps) => React.JSX.Element;
+declare const _default: (externalManifest: any) => ({ page: initialPage, requestInfo }: CatchAllClientProps) => React.JSX.Element;
 
 type CatchAllProps = {
     params: {
