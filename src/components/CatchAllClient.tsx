@@ -20,8 +20,7 @@ export default function CatchAllClient({ page: initialPage, requestInfo }: Catch
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>();
 
-  const siteManifest = require('@manifest');
-  const manifest = mergeManifestSections(siteManifest);
+  const manifest = mergeManifestSections({});
 
   useEffect(() => {
     let isInsideIframe = false;
