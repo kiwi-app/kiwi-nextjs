@@ -1,6 +1,5 @@
 /// <reference types="react" />
-import * as React from 'react';
-import React__default from 'react';
+import React from 'react';
 import { NextRequest, NextResponse } from 'next/server';
 
 type Page = {
@@ -66,14 +65,14 @@ type CatchAllServerProps = {
     page: Page;
     manifest: Manifest;
 };
-declare function CatchAllServer({ page, manifest }: CatchAllServerProps): React__default.JSX.Element;
+declare function CatchAllServer({ page, manifest }: CatchAllServerProps): React.JSX.Element;
 
 type CatchAllClientProps = {
     page: Page;
     requestInfo: LoaderRequest;
     manifest: Manifest;
 };
-declare function CatchAllClient({ page: initialPage, requestInfo, manifest, }: CatchAllClientProps): React__default.JSX.Element;
+declare function CatchAllClient({ page: initialPage, requestInfo, manifest, }: CatchAllClientProps): React.JSX.Element;
 
 type CatchAllProps = {
     params: {
@@ -103,10 +102,10 @@ declare function LiveRoute(manifest: any): {
 
 interface RichText extends String {
 }
-interface RichTextComponentProps extends React__default.HTMLAttributes<HTMLParagraphElement> {
+interface RichTextComponentProps extends React.HTMLAttributes<HTMLParagraphElement> {
     text: RichText;
 }
-declare function RichTextComponent({ text, ...props }: RichTextComponentProps): React__default.JSX.Element;
+declare function RichTextComponent({ text, ...props }: RichTextComponentProps): React.JSX.Element;
 
 type EventData = {
     [key: string]: any;

@@ -1,3 +1,4 @@
+import React from 'react';
 import { cookies, headers } from 'next/headers';
 import { getLoaderProps, getPageConfig, mergeManifestSections } from '../helpers';
 import { LoaderRequest } from '../types';
@@ -46,10 +47,7 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
       manifest: mergedManifest,
     };
 
-    // @ts-expect-error
     if (isLive) return <ClientComponent {...props} />;
-
-    // @ts-expect-error
     return <ServerComponent {...props} />;
   };
 }
