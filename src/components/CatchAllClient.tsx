@@ -14,10 +14,8 @@ export type CatchAllClientProps = {
   requestInfo: LoaderRequest;
 };
 
-export default (externalManifest: Manifest) =>
+export default (manifest: Manifest) =>
   function CatchAllClient({ page: initialPage, requestInfo }: CatchAllClientProps) {
-    const manifest = mergeManifestSections(externalManifest);
-
     const [page, setPage] = useState<Page>();
     const [liveEditing, setLiveEditing] = useState<boolean>(false);
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
