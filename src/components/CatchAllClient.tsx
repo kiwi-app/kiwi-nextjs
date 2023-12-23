@@ -20,7 +20,7 @@ export default (manifest: Manifest) =>
     const [liveEditing, setLiveEditing] = useState<boolean>(false);
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
     const [hoveredSectionId, setHoveredSectionId] = useState<string | null>();
-    console.log('page', page);
+    console.log('page', initialPage, page);
     console.log('manifest', manifest);
 
     useEffect(() => {
