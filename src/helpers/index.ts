@@ -1,7 +1,7 @@
 import { Manifest, LiveEditorMessage, Page, ExportedModule, LoaderRequest } from '../types';
 import internalManifest from '../../manifest';
 
-const KIWI_ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL;
+const { KIWI_ADMIN_URL, NEXT_PUBLIC_KIWI_API_KEY } = process.env;
 
 export type EventData = {
   [key: string]: any;
@@ -79,10 +79,16 @@ export async function getLoaderProps(
 
 export const getPageConfig = async (site: string, page: string): Promise<Page | null> => {
   if (!KIWI_ADMIN_URL) throw 'kiwi admin url must be informed';
+  if (!NEXT_PUBLIC_KIWI_API_KEY) throw 'kiwi api key must be informed';
 
   try {
     const request = await fetch(
       `${KIWI_ADMIN_URL}/api/sites/${site}/page?page=${page.replace('kiwi/live/', '')}`,
+      {
+        headers: {
+          'x-api-key': `${NEXT_PUBLIC_KIWI_API_KEY}`,
+        },
+      },
     );
     const response = await request.json();
 

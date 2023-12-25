@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { fetchEventSource } from '@microsoft/fetch-event-source';
+import React, { useState, useEffect } from 'react';
 import {
   getLoaderProps,
   mergeManifest,
@@ -12,11 +13,10 @@ export type CatchAllClientProps = {
   requestInfo: LoaderRequest;
 };
 
-const KIWI_ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL;
+const { KIWI_ADMIN_URL, NEXT_PUBLIC_KIWI_API_KEY } = process.env;
 
 export default (externalManifest: any) =>
   function CatchAllClient({ page: initialPage, requestInfo }: CatchAllClientProps) {
-    const eventSource = useRef<EventSource>();
     const [page, setPage] = useState<Page>();
     const [liveEditing, setLiveEditing] = useState<boolean>(false);
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
@@ -35,8 +35,6 @@ export default (externalManifest: any) =>
       }
 
       return () => {
-        eventSource.current?.close();
-
         if (isInsideIframe) {
           window.removeEventListener('message', onReceiveMessage);
         }
@@ -47,22 +45,16 @@ export default (externalManifest: any) =>
       if (!initialPage) return;
       if (!KIWI_ADMIN_URL) console.error('kiwi admin url must be informed');
 
-      eventSource.current = new EventSource(
-        `${KIWI_ADMIN_URL}/api/sites/${initialPage.path}/events`,
-      );
-
-      eventSource.current.onmessage = processEvent;
-      eventSource.current.onerror = () => {
-        eventSource.current?.close();
-      };
-
-      return () => {
-        eventSource.current?.close();
-      };
+      fetchEventSource(`${KIWI_ADMIN_URL}/api/sites/${initialPage.path}/events`, {
+        headers: {
+          'x-api-key': `${NEXT_PUBLIC_KIWI_API_KEY}`,
+        },
+        onmessage: (ev) => processEvent(JSON.parse(ev.data) as Page),
+      });
     }, [initialPage]);
 
-    const processEvent = (event: MessageEvent<Page>) => {
-      useSectionLoaders(event.data);
+    const processEvent = (newPage: Page) => {
+      useSectionLoaders(newPage);
     };
 
     const useSectionLoaders = async (page: Page) => {
