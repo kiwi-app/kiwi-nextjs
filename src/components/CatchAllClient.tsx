@@ -13,7 +13,7 @@ export type CatchAllClientProps = {
   requestInfo: LoaderRequest;
 };
 
-const { KIWI_ADMIN_URL, NEXT_PUBLIC_KIWI_API_KEY } = process.env;
+const { NEXT_PUBLIC_KIWI_ADMIN_URL, NEXT_PUBLIC_KIWI_API_KEY } = process.env;
 
 export default (externalManifest: any) =>
   function CatchAllClient({ page: initialPage, requestInfo }: CatchAllClientProps) {
@@ -43,9 +43,9 @@ export default (externalManifest: any) =>
 
     useEffect(() => {
       if (!initialPage) return;
-      if (!KIWI_ADMIN_URL) console.error('kiwi admin url must be informed');
+      if (!NEXT_PUBLIC_KIWI_ADMIN_URL) console.error('kiwi admin url must be informed');
 
-      fetchEventSource(`${KIWI_ADMIN_URL}/api/sites/${initialPage.path}/events`, {
+      fetchEventSource(`${NEXT_PUBLIC_KIWI_ADMIN_URL}/api/sites/${initialPage.path}/events`, {
         headers: {
           'x-api-key': `${NEXT_PUBLIC_KIWI_API_KEY}`,
         },
