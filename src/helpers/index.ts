@@ -1,7 +1,5 @@
-import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { Manifest, LiveEditorMessage, Page, ExportedModule, LoaderRequest } from '../types';
 import internalManifest from '../../manifest';
-import getSupabaseClient from '../database';
 
 const KIWI_ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL;
 
@@ -114,26 +112,6 @@ export const sendSectionHoverEvent = (iframeRef: Window, data: EventData) => {
 
 export const sendSectionClickEvent = (iframeRef: Window, data: EventData) => {
   iframeRef.postMessage(sectionClickEvent(data), '*');
-};
-
-export const listenPageChanges = (
-  pageId: string,
-  callback: (payload: RealtimePostgresChangesPayload<Page>) => void,
-) => {
-  getSupabaseClient()
-    .channel(`realtime_site_page_${pageId}`)
-    .on<Page>(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'pages',
-      },
-      (payload) => {
-        if ((payload.new as Page)?.id === pageId) callback(payload);
-      },
-    )
-    .subscribe();
 };
 
 export const isLive = (): boolean => typeof window !== 'undefined';

@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { RealtimeChannel } from '@supabase/supabase-js';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   getLoaderProps,
-  listenPageChanges,
   mergeManifest,
   sendSectionClickEvent,
   sendSectionHoverEvent,
@@ -14,8 +12,11 @@ export type CatchAllClientProps = {
   requestInfo: LoaderRequest;
 };
 
+const KIWI_ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL;
+
 export default (externalManifest: any) =>
   function CatchAllClient({ page: initialPage, requestInfo }: CatchAllClientProps) {
+    const eventSource = useRef<EventSource>();
     const [page, setPage] = useState<Page>();
     const [liveEditing, setLiveEditing] = useState<boolean>(false);
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
@@ -34,6 +35,8 @@ export default (externalManifest: any) =>
       }
 
       return () => {
+        eventSource.current?.close();
+
         if (isInsideIframe) {
           window.removeEventListener('message', onReceiveMessage);
         }
@@ -41,21 +44,26 @@ export default (externalManifest: any) =>
     }, []);
 
     useEffect(() => {
-      let channel: RealtimeChannel;
+      if (!initialPage) return;
+      if (!KIWI_ADMIN_URL) console.error('kiwi admin url must be informed');
 
-      if (initialPage) {
-        setPage(initialPage);
+      eventSource.current = new EventSource(
+        `${KIWI_ADMIN_URL}/api/sites/${initialPage.path}/events`,
+      );
 
-        listenPageChanges(initialPage.id, (payload) => {
-          const newPage = payload.new;
-          useSectionLoaders(newPage as Page);
-        });
-      }
+      eventSource.current.onmessage = processEvent;
+      eventSource.current.onerror = () => {
+        eventSource.current?.close();
+      };
 
       return () => {
-        channel?.unsubscribe();
+        eventSource.current?.close();
       };
     }, [initialPage]);
+
+    const processEvent = (event: MessageEvent<Page>) => {
+      useSectionLoaders(event.data);
+    };
 
     const useSectionLoaders = async (page: Page) => {
       for (let idx = 0; idx < page.sections?.length; idx++) {

@@ -24,7 +24,6 @@
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.2",
-    "@supabase/supabase-js": "^2.38.4",
     "@types/node": "^20.10.4",
     "@types/react": "^18.2.15",
     "autoprefixer": "^10.4.16",
@@ -41,7 +40,6 @@
     "typescript": "^5.1.6"
   },
   "peerDependencies": {
-    "@supabase/supabase-js": "^2.38.4",
     "next": "^14.0.2",
     "react": "^18.0.0"
   }
