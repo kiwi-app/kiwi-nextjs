@@ -8,7 +8,8 @@
     "dist"
   ],
   "scripts": {
-    "rollup": "rm -rf dist; rollup -c --bundleConfigAsCjs"
+    "rollup": "rm -rf dist; rollup -c --bundleConfigAsCjs",
+    "build-dev": "yarn rollup; cd ..; cp -r ./kiwi-nextjs/dist/ ./first-kiwi-site/node_modules/kiwi-nexjs/dist/"
   },
   "bin": {
     "kiwi": "src/cli/index.js"
