@@ -5,11 +5,11 @@ export declare function LiveRoute(manifest: any): {
             kiwi: string[];
         };
     }) => Promise<NextResponse<{}>>;
-    GET: (_: NextRequest, { params: { kiwi } }: {
+    GET: (request: NextRequest, { params: { kiwi } }: {
         params: {
             kiwi: string[];
         };
-    }) => NextResponse<import("..").Manifest> | undefined;
+    }) => NextResponse<{}> | undefined;
     POST: (req: NextRequest, { params: { kiwi } }: {
         params: {
             kiwi: string[];

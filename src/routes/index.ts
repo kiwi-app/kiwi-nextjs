@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { mergeManifest } from '../helpers';
 import { execSync } from 'child_process';
+import launchEditor from 'launch-editor';
+import path from 'path';
+import { mergeManifest } from '../helpers';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -19,11 +21,22 @@ export function LiveRoute(manifest: any) {
 
       return NextResponse.json({}, { headers: corsHeaders });
     },
-    GET: (_: NextRequest, { params: { kiwi } }: { params: { kiwi: string[] } }) => {
-      if (kiwi.length === 1 && kiwi[0] === 'live') {
+    GET: (request: NextRequest, { params: { kiwi } }: { params: { kiwi: string[] } }) => {
+      const fullPath = kiwi.join('/');
+      if (fullPath === 'live') {
         const mergedManifest = mergeManifest(manifest);
 
         return NextResponse.json(mergedManifest, { headers: corsHeaders });
+      }
+
+      if (fullPath === 'live/editor') {
+        const root = path.resolve();
+        const url = new URL(request.url);
+        const fileName = url.searchParams.get('file') as string;
+
+        launchEditor(`${root}/src/${fileName}`, undefined);
+
+        return NextResponse.json({}, { headers: corsHeaders });
       }
     },
     POST: async (req: NextRequest, { params: { kiwi } }: { params: { kiwi: string[] } }) => {

@@ -20,6 +20,7 @@ export default (externalManifest: any) =>
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
     const [hoveredSectionId, setHoveredSectionId] = useState<string | null>();
     const manifest = mergeManifest(externalManifest);
+    const abortController = new AbortController();
 
     useEffect(() => {
       let isInsideIframe = false;
@@ -33,6 +34,8 @@ export default (externalManifest: any) =>
       }
 
       return () => {
+        abortController.abort();
+
         if (isInsideIframe) {
           window.removeEventListener('message', onReceiveMessage);
         }
@@ -49,9 +52,14 @@ export default (externalManifest: any) =>
           headers: {
             'x-api-key': `${process.env.NEXT_PUBLIC_KIWI_API_KEY}`,
           },
+          signal: abortController.signal,
           onmessage: (ev) => processEvent(JSON.parse(ev.data) as Page),
         },
       );
+
+      return () => {
+        abortController.abort();
+      };
     }, [initialPage]);
 
     const processEvent = (newPage: Page) => {
