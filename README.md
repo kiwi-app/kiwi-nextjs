@@ -9,7 +9,8 @@ This project contains a CLI with two actions:
 
 You should configure this lib by creating the following env vars:
 
-- NEXT_PUBLIC_ADMIN_URL
+- NEXT_PUBLIC_KIWI_ADMIN_URL
+- NEXT_PUBLIC_KIWI_API_KEY
 
 ## Sections
 
