@@ -40,20 +40,18 @@ export default (externalManifest: any) =>
     }, []);
 
     useEffect(() => {
-      if (initialPage) {
-        if (!process.env.NEXT_PUBLIC_KIWI_ADMIN_URL)
-          console.error('kiwi admin url must be informed');
+      if (!initialPage) return;
+      if (!process.env.NEXT_PUBLIC_KIWI_ADMIN_URL) console.error('kiwi admin url must be informed');
 
-        fetchEventSource(
-          `${process.env.NEXT_PUBLIC_KIWI_ADMIN_URL}/api/sites/${manifest.site}/events?page=${initialPage.path}`,
-          {
-            headers: {
-              'x-api-key': `${process.env.NEXT_PUBLIC_KIWI_API_KEY}`,
-            },
-            onmessage: (ev) => processEvent(JSON.parse(ev.data) as Page),
+      fetchEventSource(
+        `${process.env.NEXT_PUBLIC_KIWI_ADMIN_URL}/api/sites/${manifest.site}/events?page=${initialPage.path}`,
+        {
+          headers: {
+            'x-api-key': `${process.env.NEXT_PUBLIC_KIWI_API_KEY}`,
           },
-        );
-      }
+          onmessage: (ev) => processEvent(JSON.parse(ev.data) as Page),
+        },
+      );
     }, [initialPage]);
 
     const processEvent = (newPage: Page) => {
