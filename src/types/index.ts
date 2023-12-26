@@ -23,6 +23,7 @@ export type Schema = {
   properties: SchemaProperty[];
   required: string[];
   type: string;
+  propsFromLoaderRequest?: boolean;
 };
 
 export type ExportedModule = {
@@ -33,7 +34,11 @@ export type ExportedModule = {
   schema: { component: Schema; loader?: Schema };
 };
 
-export type LoaderRequest = {
+export type SearchParams = { [key: string]: string | string[] | undefined };
+
+export type LoaderRequest<T = { [T: string]: string }> = {
+  params?: T;
+  searchParams?: SearchParams;
   headers?: { [T: string]: string };
   cookies?: { [T: string]: string };
 };

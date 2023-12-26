@@ -64,7 +64,11 @@ function createPropSchema(file, isLoaderFolder = false) {
           delete loaderProps[Object.keys(loaderProps)[0]];
         }
 
-        loader = loaderProps;
+        if (Object.keys(loaderProps).length === 0) {
+          loader = { propsFromLoaderRequest: true };
+        } else {
+          loader = loaderProps;
+        }
       } else {
         component = schema.definitions[definition].properties;
       }
@@ -79,10 +83,14 @@ function createPropSchema(file, isLoaderFolder = false) {
     }
   }
 
-  const loaderProps = Object.values(loader ?? {});
-  for (const prop of loaderProps) {
-    if (prop['$ref']) {
-      propSchema['loader'] = createSchemaFromRef(prop['$ref'], schema);
+  if (loader?.propsFromLoaderRequest) {
+    propSchema['loader'] = loader;
+  } else {
+    const loaderProps = Object.values(loader ?? {});
+    for (const prop of loaderProps) {
+      if (prop['$ref']) {
+        propSchema['loader'] = createSchemaFromRef(prop['$ref'], schema);
+      }
     }
   }
 

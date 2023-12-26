@@ -1,17 +1,18 @@
 import React from 'react';
 import { cookies, headers } from 'next/headers';
 import { getLoaderProps, getPageConfig, mergeManifest } from '../helpers';
-import { LoaderRequest } from '../types';
+import { LoaderRequest, SearchParams } from '../types';
 
-export type CatchAllProps = { params: { kiwi: string[] } };
+export type CatchAllProps = { params: { kiwi: string[] }; searchParams: SearchParams };
 
 export default function KiwiCatchAll(manifest: any, ClientComponent: any, ServerComponent: any) {
-  return async function CatchAll({ params: { kiwi } }: CatchAllProps) {
+  return async function CatchAll({ params: { kiwi }, searchParams }: CatchAllProps) {
     const path = kiwi.join('/');
     const isLive = path.startsWith('kiwi/live');
     const mergedManifest = mergeManifest(manifest);
 
     const requestInfo: LoaderRequest = {
+      searchParams,
       cookies: {},
       headers: {},
     };
@@ -28,6 +29,21 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
 
     const page = await getPageConfig(manifest.site, path);
     if (!page) return null;
+
+    if (page.path.includes(':')) {
+      requestInfo.params = {};
+      const paths = path.replace('kiwi/live/', '').split('/');
+      const pagePaths = page.path.split('/');
+
+      for (let idx = 0; idx < paths.length; idx++) {
+        const currentPath = paths[idx];
+        const currentPagePath = pagePaths[idx];
+
+        if (currentPagePath.includes(':')) {
+          requestInfo.params[currentPagePath.replace(':', '')] = currentPath;
+        }
+      }
+    }
 
     for (let idx = 0; idx < page.sections?.length; idx++) {
       const section = page.sections[idx];

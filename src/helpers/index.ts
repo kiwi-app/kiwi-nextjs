@@ -66,7 +66,7 @@ export async function getLoaderProps(
       loaderProps[name] = props[name];
     }
 
-    if (hasUpdatedLoaderProps) {
+    if (hasUpdatedLoaderProps || schema.loader.propsFromLoaderRequest) {
       loaders.push(module.Loader(loaderRequest, loaderProps));
     }
   }

@@ -31,6 +31,7 @@ type Schema = {
     properties: SchemaProperty[];
     required: string[];
     type: string;
+    propsFromLoaderRequest?: boolean;
 };
 type ExportedModule = {
     module: {
@@ -42,7 +43,14 @@ type ExportedModule = {
         loader?: Schema;
     };
 };
-type LoaderRequest = {
+type SearchParams = {
+    [key: string]: string | string[] | undefined;
+};
+type LoaderRequest<T = {
+    [T: string]: string;
+}> = {
+    params?: T;
+    searchParams?: SearchParams;
     headers?: {
         [T: string]: string;
     };
@@ -77,8 +85,9 @@ type CatchAllProps = {
     params: {
         kiwi: string[];
     };
+    searchParams: SearchParams;
 };
-declare function KiwiCatchAll(manifest: any, ClientComponent: any, ServerComponent: any): ({ params: { kiwi } }: CatchAllProps) => Promise<React.JSX.Element | null>;
+declare function KiwiCatchAll(manifest: any, ClientComponent: any, ServerComponent: any): ({ params: { kiwi }, searchParams }: CatchAllProps) => Promise<React.JSX.Element | null>;
 
 declare function LiveRoute(manifest: any): {
     PATCH: (_: NextRequest, { params: { kiwi } }: {
