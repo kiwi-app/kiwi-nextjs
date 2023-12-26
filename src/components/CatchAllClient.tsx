@@ -13,11 +13,9 @@ export type CatchAllClientProps = {
   requestInfo: LoaderRequest;
 };
 
-const { NEXT_PUBLIC_KIWI_ADMIN_URL, NEXT_PUBLIC_KIWI_API_KEY } = process.env;
-
 export default (externalManifest: any) =>
   function CatchAllClient({ page: initialPage, requestInfo }: CatchAllClientProps) {
-    const [page, setPage] = useState<Page>();
+    const [page, setPage] = useState<Page>(initialPage);
     const [liveEditing, setLiveEditing] = useState<boolean>(false);
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
     const [hoveredSectionId, setHoveredSectionId] = useState<string | null>();
@@ -42,35 +40,41 @@ export default (externalManifest: any) =>
     }, []);
 
     useEffect(() => {
-      if (!initialPage) return;
-      if (!NEXT_PUBLIC_KIWI_ADMIN_URL) console.error('kiwi admin url must be informed');
+      if (initialPage) {
+        if (!process.env.NEXT_PUBLIC_KIWI_ADMIN_URL)
+          console.error('kiwi admin url must be informed');
 
-      fetchEventSource(`${NEXT_PUBLIC_KIWI_ADMIN_URL}/api/sites/${initialPage.path}/events`, {
-        headers: {
-          'x-api-key': `${NEXT_PUBLIC_KIWI_API_KEY}`,
-        },
-        onmessage: (ev) => processEvent(JSON.parse(ev.data) as Page),
-      });
+        fetchEventSource(
+          `${process.env.NEXT_PUBLIC_KIWI_ADMIN_URL}/api/sites/${manifest.site}/events?page=${initialPage.path}`,
+          {
+            headers: {
+              'x-api-key': `${process.env.NEXT_PUBLIC_KIWI_API_KEY}`,
+            },
+            onmessage: (ev) => processEvent(JSON.parse(ev.data) as Page),
+          },
+        );
+      }
     }, [initialPage]);
 
     const processEvent = (newPage: Page) => {
       useSectionLoaders(newPage);
     };
 
-    const useSectionLoaders = async (page: Page) => {
-      for (let idx = 0; idx < page.sections?.length; idx++) {
-        const section = page.sections[idx];
+    const useSectionLoaders = async (newPage: Page) => {
+      for (let idx = 0; idx < newPage.sections?.length; idx++) {
+        const section = newPage.sections[idx];
         const sectionModule = manifest.sections[section.type];
 
-        page.sections[idx].props = await getLoaderProps(
+        newPage.sections[idx].props = await getLoaderProps(
           requestInfo,
           section.props,
+          page.sections[idx].props,
           sectionModule,
           manifest,
         );
       }
 
-      setPage(page);
+      setPage(newPage);
     };
 
     const onReceiveMessage = (event: MessageEvent<LiveEditorMessage>) => {

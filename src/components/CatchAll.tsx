@@ -36,6 +36,7 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
       page.sections[idx].props = await getLoaderProps(
         requestInfo,
         section.props,
+        {},
         sectionModule,
         manifest,
       );

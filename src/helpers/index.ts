@@ -26,6 +26,7 @@ const sectionHoverEvent = (data: EventData): LiveEditorMessage => ({
 export async function getLoaderProps(
   loaderRequest: LoaderRequest,
   props: { [key: string]: any },
+  oldProps: { [key: string]: any },
   sectionModule: ExportedModule,
   manifest: Manifest,
 ): Promise<{ [key: string]: any }> {
@@ -34,7 +35,7 @@ export async function getLoaderProps(
 
   const loaders: Promise<any>[] = [];
   const loadersProps: string[] = [];
-  let hasExportedLoader = false;
+  const _loaderMetadata: { [key: string]: any } = {};
 
   for (const property of schema?.component?.properties || []) {
     const { name, type } = property;
@@ -46,17 +47,28 @@ export async function getLoaderProps(
     }
   }
 
+  let hasExportedLoader = false;
+  let hasUpdatedLoaderProps = false;
   if (schema.loader && module.Loader) {
     hasExportedLoader = true;
     let loaderProps: { [T: string]: unknown } = {};
+
     for (const loaderProperty of schema.loader.properties || []) {
       const { name } = loaderProperty;
 
+      const oldLoaderMetadata = oldProps._loaderMetadata ?? {};
+      if (newProps[name] !== oldLoaderMetadata[name]) {
+        hasUpdatedLoaderProps = true;
+      }
+
+      _loaderMetadata[name] = newProps[name];
       delete newProps[name];
       loaderProps[name] = props[name];
     }
 
-    loaders.push(module.Loader(loaderRequest, loaderProps));
+    if (hasUpdatedLoaderProps) {
+      loaders.push(module.Loader(loaderRequest, loaderProps));
+    }
   }
 
   const loadersResponses = await Promise.all(loaders);
@@ -70,10 +82,12 @@ export async function getLoaderProps(
       newProps = {
         ...newProps,
         loader: loaderResponse,
+        _loaderMetadata,
       };
     }
   }
 
+  if (!hasUpdatedLoaderProps) return { ...oldProps, ...newProps };
   return newProps;
 }
 
@@ -119,5 +133,3 @@ export const sendSectionHoverEvent = (iframeRef: Window, data: EventData) => {
 export const sendSectionClickEvent = (iframeRef: Window, data: EventData) => {
   iframeRef.postMessage(sectionClickEvent(data), '*');
 };
-
-export const isLive = (): boolean => typeof window !== 'undefined';
