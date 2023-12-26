@@ -66,7 +66,7 @@ export default (externalManifest: any) =>
         newPage.sections[idx].props = await getLoaderProps(
           requestInfo,
           section.props,
-          page.sections[idx].props,
+          page.sections[idx]?.props || {},
           sectionModule,
           manifest,
         );
