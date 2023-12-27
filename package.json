@@ -1,6 +1,6 @@
 {
   "name": "@kiwi-app/kiwi-nextjs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NextJS library for Kiwi integration",
   "main": "dist/cjs/index.js",
   "types": "dist/index.d.ts",
