@@ -55,6 +55,7 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
         {},
         sectionModule,
         manifest,
+        isLive,
       );
     }
 

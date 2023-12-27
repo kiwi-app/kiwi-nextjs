@@ -29,9 +29,11 @@ export async function getLoaderProps(
   oldProps: { [key: string]: any },
   sectionModule: ExportedModule,
   manifest: Manifest,
+  isLive: boolean,
 ): Promise<{ [key: string]: any }> {
   const { schema, module } = sectionModule;
   let newProps: any = { ...props };
+  delete newProps._test;
 
   const loaders: Promise<any>[] = [];
   const loadersProps: string[] = [];
@@ -67,7 +69,17 @@ export async function getLoaderProps(
     }
 
     if (hasUpdatedLoaderProps || schema.loader.propsFromLoaderRequest) {
-      loaders.push(module.Loader(loaderRequest, loaderProps));
+      loaders.push(
+        module.Loader(
+          isLive
+            ? {
+                ...loaderRequest,
+                params: props._test,
+              }
+            : loaderRequest,
+          loaderProps,
+        ),
+      );
     }
   }
 

@@ -26,6 +26,15 @@ type SchemaProperty = {
     name: string;
     type: string;
     description?: string;
+    items?: {
+        type: string;
+    };
+    properties?: {
+        [T: string]: {
+            type: string;
+        };
+    };
+    required?: string[];
 };
 type Schema = {
     properties: SchemaProperty[];

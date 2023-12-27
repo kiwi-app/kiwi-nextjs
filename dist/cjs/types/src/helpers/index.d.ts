@@ -6,7 +6,7 @@ export declare function getLoaderProps(loaderRequest: LoaderRequest, props: {
     [key: string]: any;
 }, oldProps: {
     [key: string]: any;
-}, sectionModule: ExportedModule, manifest: Manifest): Promise<{
+}, sectionModule: ExportedModule, manifest: Manifest, isLive: boolean): Promise<{
     [key: string]: any;
 }>;
 export declare const getPageConfig: (site: string, page: string) => Promise<Page | null>;

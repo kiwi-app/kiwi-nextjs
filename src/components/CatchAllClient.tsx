@@ -77,6 +77,7 @@ export default (externalManifest: any) =>
           page.sections?.[idx]?.props || {},
           sectionModule,
           manifest,
+          true,
         );
       }
 
