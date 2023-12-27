@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 export declare function LiveRoute(manifest: any): {
     PATCH: (_: NextRequest, { params: { kiwi } }: {
         params: {

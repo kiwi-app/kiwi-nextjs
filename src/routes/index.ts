@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { execSync } from 'child_process';
 import launchEditor from 'launch-editor';
 import path from 'path';

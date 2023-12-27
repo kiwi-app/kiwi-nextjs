@@ -5,6 +5,8 @@ This project contains a CLI with two actions:
 - `kiwi init`: configures folders and behaviors to integrate with admin app
 - `kiwi manifest`: generates a manifest file which contains all sections and loaders created locally in your project which will be displayed through the "CatchAll" component and used by **kiwi admin** to display your sections and loaders with their props.
 
+## [Demo](https://github.com/kiwi-app/kiwi-template)
+
 ## Configuration
 
 You should configure this lib by creating the following env vars:
@@ -71,6 +73,15 @@ export default function Banner(props: BannerProps) {
 
 > **IMPORTANT**: You should export your props interface!
 
+## LoaderRequest
+
+Loader request brings to your loader:
+
+- search params used while accessing the page (/home?say=hello)
+- url params (generic type, you will see a sample forward)
+- haders
+- cookies
+
 ## Loaders
 
 ```ts
@@ -80,7 +91,8 @@ interface ProductsLoader {
   products: {
     id: number;
     title: string;
-    category: string;
+    description: string;
+    price: number;
   }[];
 }
 
@@ -124,3 +136,49 @@ You will receive the "loaded props" in your "loader" prop.
 ![section with loader](docs/section_with_loader.png)
 
 > **IMPORTANT**: The exported loader function **MUST** be called "Loader" and your "receiver" prop **MUST** be called "loader". So that kiwi admin can handle without side effects.
+
+## Dynamic pages
+
+You can create dynamic pages and receive the params from "LoaderRequest" object inside your loader.
+
+```ts
+// Component
+interface Product {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+}
+
+export interface ProductProps {
+  loader: Product;
+}
+
+export default function Product(props: ProductsProps) {
+  return ...;
+}
+
+// Loader
+// interface used only for typing the "params" object
+interface ProductParams {
+  id: string;
+}
+
+// page: /product/:id
+export async function Loader(req: LoaderRequest<ProductParams>): Promise<Product | null> {
+  try {
+    const request = await fetch(`https://dummyjson.com/products/${req.params!.id}`);
+    const product = await request.json();
+
+    return product;
+  } catch (e) {
+    return null;
+  }
+}
+```
+
+For testing and preview purposes, the admin shows an input for each path param and it will be replaced as loader props while "live editing".
+<br />
+<br />
+<br />
+![loader testing props](docs/section_loader_path_params.png)
