@@ -1,11 +1,12 @@
 {
   "name": "@kiwi-app/kiwi-nextjs",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "NextJS library for Kiwi integration",
   "main": "dist/cjs/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "src/cli"
   ],
   "scripts": {
     "rollup": "rm -rf dist; rollup -c --bundleConfigAsCjs"
