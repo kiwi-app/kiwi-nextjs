@@ -1,7 +1,7 @@
 {
-  "name": "kiwi-nexjs",
+  "name": "kiwi-nextjs",
   "version": "1.0.0",
-  "description": "",
+  "description": "NextJS library for Kiwi integration",
   "main": "dist/cjs/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -45,5 +45,17 @@
   "peerDependencies": {
     "next": "^14.0.2",
     "react": "^18.0.0"
-  }
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiwi-app/kiwi-nextjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiwi-app/kiwi-nextjs/issues"
+  },
+  "homepage": "https://github.com/kiwi-app/kiwi-nextjs#readme"
 }
