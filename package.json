@@ -5,7 +5,8 @@
   "main": "dist/cjs/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "rollup": "rm -rf dist; rollup -c --bundleConfigAsCjs"
+    "rollup": "rm -rf dist; rollup -c --bundleConfigAsCjs",
+    "test": "jest"
   },
   "bin": {
     "kiwi": "src/cli/index.js"
@@ -29,7 +30,8 @@
     "launch-editor": "^2.6.1",
     "next": "^14.0.2",
     "postcss": "^8.4.31",
-    "react": "^18.2.0",
+    "prettier": "^2.8.8",
+    "react": "^18.0.0",
     "rollup": "^3.26.3",
     "rollup-plugin-dts": "^5.3.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
@@ -46,7 +48,6 @@
   "directories": {
     "doc": "docs"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kiwi-app/kiwi-nextjs.git"
@@ -54,5 +55,8 @@
   "bugs": {
     "url": "https://github.com/kiwi-app/kiwi-nextjs/issues"
   },
-  "homepage": "https://github.com/kiwi-app/kiwi-nextjs#readme"
+  "homepage": "https://github.com/kiwi-app/kiwi-nextjs#readme",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
