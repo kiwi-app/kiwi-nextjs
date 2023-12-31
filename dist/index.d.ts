@@ -99,7 +99,7 @@ type CatchAllProps = {
 declare function KiwiCatchAll(manifest: any, ClientComponent: any, ServerComponent: any): ({ params: { kiwi }, searchParams }: CatchAllProps) => Promise<React.JSX.Element | null>;
 
 declare function LiveRoute(manifest: any): {
-    PATCH: (_: NextRequest, { params: { kiwi } }: {
+    PATCH: (req: NextRequest, { params: { kiwi } }: {
         params: {
             kiwi: string[];
         };

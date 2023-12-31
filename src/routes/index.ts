@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { execSync } from 'child_process';
 import launchEditor from 'launch-editor';
 import path from 'path';
@@ -12,11 +13,25 @@ const corsHeaders = {
 
 export function LiveRoute(manifest: any) {
   return {
-    PATCH: async (_: NextRequest, { params: { kiwi } }: { params: { kiwi: string[] } }) => {
+    PATCH: async (req: NextRequest, { params: { kiwi } }: { params: { kiwi: string[] } }) => {
       if (kiwi.join('/') === 'live/manifest') {
         const result = execSync('npx kiwi manifest');
 
         return NextResponse.json({ result }, { headers: corsHeaders });
+      }
+
+      if (kiwi.join('/') === 'revalidate') {
+        const { path, site } = await req.json();
+
+        if (site !== manifest.site) {
+          return NextResponse.json({}, { headers: corsHeaders });
+        }
+
+        revalidatePath(path);
+        return NextResponse.json(
+          { message: `revalidated path "${path}"` },
+          { headers: corsHeaders },
+        );
       }
 
       return NextResponse.json({}, { headers: corsHeaders });

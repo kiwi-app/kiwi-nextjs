@@ -1,7 +1,12 @@
 import { Manifest, LiveEditorMessage, Page, ExportedModule, LoaderRequest } from '../types';
 import internalManifest from '../../manifest';
 
-const { NEXT_PUBLIC_KIWI_ADMIN_URL, NEXT_PUBLIC_KIWI_API_KEY } = process.env;
+const {
+  NEXT_PUBLIC_KIWI_ADMIN_URL,
+  NEXT_PUBLIC_KIWI_API_KEY,
+  /* 1 day */
+  NEXT_PUBLIC_KIWI_CACHE_TTL = '86400',
+} = process.env;
 
 export type EventData = {
   [key: string]: any;
@@ -111,6 +116,10 @@ export const getPageConfig = async (site: string, page: string): Promise<Page | 
     const request = await fetch(
       `${NEXT_PUBLIC_KIWI_ADMIN_URL}/api/sites/${site}/page?page=${page.replace('kiwi/live/', '')}`,
       {
+        // @ts-ignore
+        next: {
+          revalidate: Number(NEXT_PUBLIC_KIWI_CACHE_TTL),
+        },
         headers: {
           'x-api-key': `${NEXT_PUBLIC_KIWI_API_KEY}`,
         },
