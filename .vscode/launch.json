@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "type": "node",
+            "name": "jest-tests",
+            "request": "launch",
+            "args": [
+                "test",
+                "${fileBasenameNoExtension}",
+                "--runInBand",
+                "--no-cache",
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "runtimeExecutable": "npm",
+        }
+    ]
+}

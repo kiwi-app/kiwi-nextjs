@@ -5,12 +5,21 @@ const manifest = require('./manifest');
 
 const [action, ...args] = process.argv.slice(2);
 
-if (action === 'init') {
-  init(args);
+const actions = {
+  'init': init,
+  'manifest': manifest,
 }
 
-if (action === 'manifest') {
-  manifest(args);
+async function executeCli() {
+  if (Object.hasOwn(actions, action)) {
+    await actions[action](args);
+  }
+  else {
+    const strActions = Object.keys(actions).join('|');
+    console.log(`\nusage: npx kiwi <command> (${strActions})\n`);
+  }
+
+  process.exit(0);
 }
 
-process.exit(0);
+executeCli();
