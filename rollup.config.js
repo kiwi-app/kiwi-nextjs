@@ -35,8 +35,13 @@ export default [
     ],
   },
   {
-    input: 'dist/cjs/types/src/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    input: 'src/cli/index.js',
+    output: [{ file: 'build/cli/index.js', format: 'esm' }],
+    plugins: [commonjs()],
+  },
+  {
+    input: 'build/cjs/types/src/index.d.ts',
+    output: [{ file: 'build/index.d.ts', format: 'esm' }],
     plugins: [dts.default()],
     external: [/\.css$/],
   },

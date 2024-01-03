@@ -1,7 +1,7 @@
 import React from 'react';
 import { cookies, headers } from 'next/headers';
-import { getLoaderProps, getPageConfig, mergeManifest } from '../helpers';
-import { LoaderRequest, SearchParams } from '../types';
+import { getLoaderProps, getPageConfig, mergeManifest } from '../../helpers';
+import { LoaderRequest, SearchParams } from '../../types';
 
 export type CatchAllProps = { params: { kiwi: string[] }; searchParams: SearchParams };
 

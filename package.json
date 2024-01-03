@@ -2,15 +2,19 @@
   "name": "@kiwi-app/kiwi-nextjs",
   "version": "1.0.6",
   "description": "NextJS library for Kiwi integration",
-  "main": "dist/cjs/index.js",
-  "types": "dist/index.d.ts",
+  "main": "build/cjs/index.js",
+  "types": "build/index.d.ts",
   "scripts": {
-    "rollup": "rm -rf dist; rollup -c --bundleConfigAsCjs",
+    "build": "rm -rf build; rollup -c --bundleConfigAsCjs",
     "test": "jest"
   },
   "bin": {
-    "kiwi": "src/cli/index.js"
+    "kiwi": "build/cli/index.js"
   },
+  "files": [
+    "build",
+    "README.md"
+  ],
   "browser": {
     "child_process": false,
     "fs": false
@@ -18,38 +22,37 @@
   "author": "Kiwi",
   "license": "MIT",
   "dependencies": {
-    "@microsoft/fetch-event-source": "^2.0.1",
-    "@rollup/plugin-commonjs": "^25.0.3",
-    "@rollup/plugin-json": "^6.0.1",
-    "@rollup/plugin-node-resolve": "^15.1.0",
-    "@rollup/plugin-terser": "^0.4.3",
-    "@rollup/plugin-typescript": "^11.1.2",
-    "autoprefixer": "^10.4.16",
     "launch-editor": "^2.6.1",
     "next": "^14.0.2",
-    "postcss": "^8.4.31",
     "prettier": "^2.8.8",
     "react": "^18.0.0",
-    "rollup": "^3.26.3",
-    "rollup-plugin-dts": "^5.3.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-postcss": "^4.0.2",
-    "tailwindcss": "^3.3.5",
     "ts-json-schema-generator": "^1.5.0",
-    "tslib": "^2.6.0",
-    "typescript": "^5.1.6"
+    "tslib": "^2.6.0"
   },
   "peerDependencies": {
     "next": "^14.0.2",
     "react": "^18.0.0"
   },
-  "directories": {
-    "doc": "docs"
-  },
   "devDependencies": {
+    "postcss": "^8.4.31",
+    "autoprefixer": "^10.4.16",
+    "tailwindcss": "^3.3.5",
     "@types/node": "^20.10.4",
     "@types/react": "^18.2.15",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "typescript": "^5.1.6",
+    "@rollup/plugin-commonjs": "^25.0.3",
+    "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-typescript": "^11.1.2",
+    "rollup": "^3.26.3",
+    "rollup-plugin-dts": "^5.3.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2"
+  },
+  "directories": {
+    "doc": "docs"
   },
   "repository": {
     "type": "git",

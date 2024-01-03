@@ -9,7 +9,7 @@ export type Page = {
 
 export type LiveEditorMessage = {
   type: string;
-  event: 'hover-section' | 'click-section' | 'remove-section';
+  event: 'hover-section' | 'click-section' | 'remove-section' | 'page-update';
   data: { [key: string]: any };
 };
 

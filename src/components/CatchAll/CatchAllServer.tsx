@@ -1,5 +1,5 @@
 import React from 'react';
-import { Manifest, Page } from '../types';
+import { Manifest, Page } from '../../types';
 
 export type CatchAllServerProps = { page: Page; manifest: Manifest };
 

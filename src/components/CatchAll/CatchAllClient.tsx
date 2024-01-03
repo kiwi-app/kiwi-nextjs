@@ -1,12 +1,11 @@
-import { fetchEventSource } from '@microsoft/fetch-event-source';
 import React, { useState, useEffect } from 'react';
 import {
   getLoaderProps,
   mergeManifest,
   sendSectionClickEvent,
   sendSectionHoverEvent,
-} from '../helpers';
-import { LiveEditorMessage, Page, LoaderRequest } from '../types';
+} from '../../helpers';
+import { LiveEditorMessage, Page, LoaderRequest } from '../../types';
 
 export type CatchAllClientProps = {
   page: Page;
@@ -20,7 +19,6 @@ export default (externalManifest: any) =>
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
     const [hoveredSectionId, setHoveredSectionId] = useState<string | null>();
     const manifest = mergeManifest(externalManifest);
-    const abortController = new AbortController();
 
     useEffect(() => {
       let isInsideIframe = false;
@@ -34,39 +32,32 @@ export default (externalManifest: any) =>
       }
 
       return () => {
-        abortController.abort();
-
         if (isInsideIframe) {
           window.removeEventListener('message', onReceiveMessage);
         }
       };
     }, []);
 
-    useEffect(() => {
-      if (!initialPage) return;
-      if (!process.env.NEXT_PUBLIC_KIWI_ADMIN_URL) console.error('kiwi admin url must be informed');
+    const onReceiveMessage = (event: MessageEvent<LiveEditorMessage>) => {
+      const message = event.data;
 
-      fetchEventSource(
-        `${process.env.NEXT_PUBLIC_KIWI_ADMIN_URL}/api/sites/${manifest.site}/events?page=${initialPage.path}`,
-        {
-          headers: {
-            'x-api-key': `${process.env.NEXT_PUBLIC_KIWI_API_KEY}`,
-          },
-          signal: abortController.signal,
-          onmessage: (ev) => processEvent(JSON.parse(ev.data) as Page),
-        },
-      );
+      if (message.type !== 'live') return;
 
-      return () => {
-        abortController.abort();
-      };
-    }, [initialPage]);
+      if (message.event === 'hover-section') {
+        setHoveredSectionId(event.data.data.sectionId);
+      }
 
-    const processEvent = (newPage: Page) => {
-      useSectionLoaders(newPage);
+      if (message.event === 'click-section') {
+        setSelectedSectionId(event.data.data.sectionId);
+        setHoveredSectionId(event.data.data.sectionId);
+      }
+
+      if (message.event === 'page-update') {
+        updatePageWithLoaders(JSON.parse(event.data.data.section));
+      }
     };
 
-    const useSectionLoaders = async (newPage: Page) => {
+    const updatePageWithLoaders = async (newPage: Page) => {
       for (let idx = 0; idx < newPage.sections?.length; idx++) {
         const section = newPage.sections[idx];
         const sectionModule = manifest.sections[section.type];
@@ -82,21 +73,6 @@ export default (externalManifest: any) =>
       }
 
       setPage(newPage);
-    };
-
-    const onReceiveMessage = (event: MessageEvent<LiveEditorMessage>) => {
-      const message = event.data;
-
-      if (message.type !== 'live') return;
-
-      if (message.event === 'hover-section') {
-        setHoveredSectionId(event.data.data.sectionId);
-      }
-
-      if (message.event === 'click-section') {
-        setSelectedSectionId(event.data.data.sectionId);
-        setHoveredSectionId(event.data.data.sectionId);
-      }
     };
 
     return (
