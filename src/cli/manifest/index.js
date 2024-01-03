@@ -8,8 +8,7 @@ const { createPropSchema } = require('./schema');
 const SECTION_PATH = `${root}/src/sections`;
 
 function getSections(path, sections) {
-  if (!sections.length)
-    return [];
+  if (!sections.length) return [];
 
   const services = sections.map((section) => {
     const component = {
@@ -27,7 +26,7 @@ function getSevices() {
   const sections = ls(SECTION_PATH);
 
   const services = {
-    sections: getSections(SECTION_PATH, sections)
+    sections: getSections(SECTION_PATH, sections),
   };
 
   return services;
@@ -36,13 +35,15 @@ function getSevices() {
 async function manifest(args) {
   const services = getSevices();
 
-  const sections = services.sections.map(({ path, schema }, i) =>
-    `"${path}": { module: $${i}, schema: ${JSON.stringify(schema)} },`,
-  ).join('\n    ');
+  const sections = services.sections
+    .map(
+      ({ path, schema }, i) => `"${path}": { module: $${i}, schema: ${JSON.stringify(schema)} },`,
+    )
+    .join('\n    ');
 
-  const imports = services.sections.map(({ path }, i) => (
-    `import * as $${i} from '${path}';`
-  )).join('\n');
+  const imports = services.sections
+    .map(({ path }, i) => `import * as $${i} from '${path}';`)
+    .join('\n');
 
   const output = `
     ${imports}
@@ -60,6 +61,6 @@ async function manifest(args) {
 
   console.log('Writing manifest...');
   writeFileSync(`${root}/manifest.ts`, formattedOutput, { encoding: 'utf-8' });
-};
+}
 
 module.exports = manifest;

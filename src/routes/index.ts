@@ -1,8 +1,8 @@
+import path from 'path';
 import { NextResponse, type NextRequest } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { execSync } from 'child_process';
 import launchEditor from 'launch-editor';
-import path from 'path';
 import { mergeManifest } from '../helpers';
 
 const corsHeaders = {

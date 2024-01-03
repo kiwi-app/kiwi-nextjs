@@ -6,6 +6,11 @@ const manifest = require('./manifest');
 const root = path.resolve();
 const packageJson = require(`${root}/package.json`);
 
+const handleSigTerm = () => process.exit(0);
+
+process.on('SIGINT', handleSigTerm);
+process.on('SIGTERM', handleSigTerm);
+
 const onPromptState = (state) => {
   if (state.aborted) {
     process.stdout.write('\x1B[?25h');
@@ -32,14 +37,24 @@ module.exports = async function (args) {
     initial: packageJson.name,
   });
 
-  const rootRes = await prompts({
-    type: 'toggle',
-    name: 'root',
-    message: 'Enable kiwi to manage your index page (/)?',
-    initial: 'Yes',
-    active: 'Yes',
-    inactive: 'No',
-  });
+  const rootRes = await prompts(
+    {
+      onState: onPromptState,
+      type: 'toggle',
+      name: 'root',
+      message: 'Enable kiwi to manage your index page (/)?',
+      hint: 'it will remove your root page component',
+      initial: 'Yes',
+      active: 'Yes',
+      inactive: 'No',
+    },
+    {
+      onCancel: () => {
+        console.error('Exiting.');
+        process.exit(1);
+      },
+    },
+  );
 
   console.log('Initializing kiwi...');
 
@@ -128,10 +143,9 @@ module.exports = async function (args) {
 
   const updateTsConfig = () => {
     let newTsConfig;
-    const tsConfigRoot = path.resolve();
 
     try {
-      const configFile = require(`${tsConfigRoot}/tsconfig.json`);
+      const configFile = require(`${root}/tsconfig.json`);
 
       if (configFile.compilerOptions) {
         configFile.compilerOptions.paths = {
@@ -157,10 +171,10 @@ module.exports = async function (args) {
       };
     }
 
-    writeFileSync(`${tsConfigRoot}/tsconfig.json`, JSON.stringify(newTsConfig), {
+    writeFileSync(`${root}/tsconfig.json`, JSON.stringify(newTsConfig), {
       encoding: 'utf-8',
     });
-    execSync(`npx prettier '${tsConfigRoot}/tsconfig.json' --write`);
+    execSync(`npx prettier '${root}/tsconfig.json' --write`);
   };
 
   manifest();
