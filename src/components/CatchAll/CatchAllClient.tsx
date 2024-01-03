@@ -53,7 +53,7 @@ export default (externalManifest: any) =>
       }
 
       if (message.event === 'page-update') {
-        updatePageWithLoaders(JSON.parse(event.data.data.section));
+        updatePageWithLoaders(event.data.data.page);
       }
     };
 

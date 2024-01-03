@@ -1,13 +1,64 @@
 const path = require('path');
-const { writeFileSync, mkdirSync } = require('fs');
+const { writeFileSync, mkdirSync, unlinkSync } = require('fs');
 const { execSync } = require('child_process');
+const prompts = require('prompts');
 const manifest = require('./manifest');
+const root = path.resolve();
+const packageJson = require(`${root}/package.json`);
 
-module.exports = function (args) {
-  const root = path.resolve('./src/app/');
+const onPromptState = (state) => {
+  if (state.aborted) {
+    process.stdout.write('\x1B[?25h');
+    process.stdout.write('\n');
+    process.exit(1);
+  }
+};
 
-  const SERVER_COMPONENT_PATH = `${root}/(kiwi)/[...kiwi]`;
-  const API_PATH = `${root}/(kiwi)/api/kiwi/[...kiwi]`;
+const modifyPackageName = async (newName) => {
+  const newPackageJson = { ...packageJson, name: newName };
+
+  writeFileSync(`${root}/package.json`, JSON.stringify(newPackageJson), {
+    encoding: 'utf-8',
+  });
+  execSync(`npx prettier '${root}/package.json' --write`);
+};
+
+module.exports = async function (args) {
+  const nameRes = await prompts({
+    onState: onPromptState,
+    type: 'text',
+    name: 'name',
+    message: 'What is your site named?',
+    initial: packageJson.name,
+  });
+
+  const rootRes = await prompts({
+    type: 'toggle',
+    name: 'root',
+    message: 'Enable kiwi to manage your index page (/)?',
+    initial: 'Yes',
+    active: 'Yes',
+    inactive: 'No',
+  });
+
+  console.log('Initializing kiwi...');
+
+  if (nameRes.name !== packageJson.name) {
+    console.log('Changing package.json with the new site name...');
+    await modifyPackageName(nameRes.name);
+  }
+
+  const appRoot = path.resolve('./src/app/');
+
+  if (rootRes.root) {
+    try {
+      console.log('Removing local root page component for kiwi root page compatibility');
+      await unlinkSync(`${appRoot}/page.tsx`);
+    } catch (_) {}
+  }
+
+  const SERVER_COMPONENT_PATH = `${appRoot}/(kiwi)/${rootRes.root ? '[[...kiwi]]' : '[...kiwi]'}`;
+  const API_PATH = `${appRoot}/(kiwi)/api/kiwi/[...kiwi]`;
 
   const createKiwiFolder = () => {
     mkdirSync(SERVER_COMPONENT_PATH, { recursive: true });

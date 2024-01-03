@@ -7,6 +7,7 @@ import postcss from 'rollup-plugin-postcss';
 import dts from 'rollup-plugin-dts';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import tailwindcss from 'tailwindcss';
+import copy from 'rollup-plugin-copy';
 
 const packageJson = require('./package.json');
 const tailwindConfig = require('./tailwind.config');
@@ -32,12 +33,17 @@ export default [
       commonjs(),
       json(),
       terser(),
+      copy({
+        targets: [
+          {
+            src: ['src/cli/infrastructure/*.js', '!**/*.spec.js'],
+            dest: 'build/cli/infrastructure',
+          },
+          { src: ['src/cli/manifest/*.js', '!**/*.spec.js'], dest: 'build/cli/manifest' },
+          { src: ['src/cli/*.js'], dest: 'build/cli' },
+        ],
+      }),
     ],
-  },
-  {
-    input: 'src/cli/index.js',
-    output: [{ file: 'build/cli/index.js', format: 'esm' }],
-    plugins: [commonjs()],
   },
   {
     input: 'build/cjs/types/src/index.d.ts',
