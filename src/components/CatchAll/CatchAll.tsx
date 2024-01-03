@@ -1,4 +1,3 @@
-import React from 'react';
 import { cookies, headers } from 'next/headers';
 import { getLoaderProps, getPageConfig, mergeManifest } from '../../helpers';
 import { LoaderRequest, SearchParams } from '../../types';
@@ -7,7 +6,7 @@ export type CatchAllProps = { params: { kiwi: string[] }; searchParams: SearchPa
 
 export default function KiwiCatchAll(manifest: any, ClientComponent: any, ServerComponent: any) {
   return async function CatchAll({ params: { kiwi }, searchParams }: CatchAllProps) {
-    const path = kiwi.join('/');
+    const path = kiwi?.join('/') || '';
     const isLive = path.startsWith('kiwi/live');
     const mergedManifest = mergeManifest(manifest);
 

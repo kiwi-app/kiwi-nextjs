@@ -114,7 +114,10 @@ export const getPageConfig = async (site: string, page: string): Promise<Page | 
 
   try {
     const request = await fetch(
-      `${NEXT_PUBLIC_KIWI_ADMIN_URL}/api/sites/${site}/page?page=${page.replace('kiwi/live/', '')}`,
+      `${NEXT_PUBLIC_KIWI_ADMIN_URL}/api/sites/${site}/page?page=${page.replace(
+        /kiwi\/live(\/*)/g,
+        '',
+      )}`,
       {
         // @ts-ignore
         next: {
