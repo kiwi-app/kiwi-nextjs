@@ -1,4 +1,20 @@
+const root = require('path').resolve();
 const prettier = require('prettier');
+const packageJson = require(`${root}/package.json`);
+
+const userKiwiConfig = packageJson.KiwiConfig || {};
+const defaultKiwiConfig = {
+    moduleFileNameCase: 'kebab',
+    ...userKiwiConfig,
+};
+
+async function prettyFileContent(content) {
+    const formattedOutput = await prettier.format(content, {
+        parser: "babel-ts",
+    });
+
+    return formattedOutput;
+}
 
 async function prettyProtectedFileContent(content) {
   const template = `
@@ -7,14 +23,20 @@ async function prettyProtectedFileContent(content) {
 
         ${content}
     `;
+    const formattedOutput = prettyFileContent(template);
+    return formattedOutput;
+}
 
-  const formattedOutput = await prettier.format(template, {
-    parser: 'babel-ts',
-  });
+function getKiwiConfig(key) {
+    if (!Object.hasOwn(defaultKiwiConfig, key))
+        return null;
 
-  return formattedOutput;
+    const config = defaultKiwiConfig[key];
+    return config;
 }
 
 module.exports = {
-  prettyProtectedFileContent,
+    prettyFileContent,
+    prettyProtectedFileContent,
+    getKiwiConfig,
 };
