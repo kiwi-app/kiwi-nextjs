@@ -1,8 +1,9 @@
 const tsj = require('ts-json-schema-generator');
 const {
     fileNameFromPath,
-    kebabToTitle
+    anycaseToTitle
 } = require('../infrastructure/file-system');
+const { getKiwiConfig } = require('../infrastructure/commons');
 
 const DEFAULT_TYPES = [
     'RichText',
@@ -22,10 +23,14 @@ function makeConfig(modulePath) {
 }
 
 function createSchema(modulePath) {
-    const config = makeConfig(modulePath);
-    const schema = tsj.createGenerator(config).createSchema(config.type);
+    try {
+        const config = makeConfig(modulePath);
+        const schema = tsj.createGenerator(config).createSchema(config.type);
 
-    return schema;
+        return schema;
+    } catch (e) {
+        console.log(`It wasn't possible to generate the schema: module[${modulePath}].`)
+    }
 }
 
 function getModuleNameByPath(modulePath) {
@@ -38,7 +43,8 @@ function getModuleNameByPath(modulePath) {
 }
 
 function getInterfaceNameByModuleName(schema, moduleName, sulfix) {
-    const interfaceName = kebabToTitle(moduleName) + sulfix;
+    const moduleCase = getKiwiConfig('moduleFileNameCase');
+    const interfaceName = anycaseToTitle(moduleCase, moduleName) + sulfix;
 
     if (!Object.hasOwn(schema.definitions, interfaceName)) {
         return null;
@@ -67,46 +73,80 @@ function getInterfaceByRef(schema, $ref) {
     return refInterface;
 }
 
-function buildProperty(schema, properties, prop) {
-    if (Object.hasOwn(properties[prop], '$ref')) {
-        const { $ref } = properties[prop];
-        const refType = parseRef($ref);
-
-        if (DEFAULT_TYPES.includes(refType)) {
-            return {
-                name: prop,
-                type: refType,
-            };
-        }
-
-        const refInterface = getInterfaceByRef(schema, $ref);
-        if (refInterface === null) {
-            throw `the type ${$ref} wasn't found in the schema`;
-        }
-
-        const module = assembleSchema(schema, refInterface);
-        return {
-            ...module,
-            name: prop,
-            type: 'object',
-        };
-    }
-
-    if (properties[prop].type === 'object') {
-        const objInterface = properties[prop];
-        const module = assembleSchema(schema, objInterface);
-
-        return {
-            ...module,
-            name: prop,
-            type: 'object',
-        };
-    }
-
+function moduleToArrayModule(name, module) {
+    const { type, required, properties } = module;
     return {
-        name: prop,
-        type: properties[prop].type
+        name,
+        type: 'array',
+        items: { type, required, properties },
     };
+}
+
+function buildObjectTypeProperty(schema, property, name) {
+    const module = assembleSchema(schema, property);
+    return { ...module, name, type: 'object' };
+}
+
+function buildRefProperty(schema, property, name) {
+    const { $ref } = property;
+    const type = parseRef($ref);
+
+    if (DEFAULT_TYPES.includes(type)) {
+        return { name, type };
+    }
+
+    const refInterface = getInterfaceByRef(schema, $ref);
+    const module = buildObjectTypeProperty(schema, refInterface, name);
+
+    return module;
+}
+
+function buildArrayTypeProperty(schema, property, name) {
+    const { items } = property;
+
+    if (Object.hasOwn(items, '$ref')) {
+        const module = buildRefProperty(schema, items, name);
+        const { type } = module;
+
+        if (type === 'object') {
+            const prop = moduleToArrayModule(name, module);
+            return prop;
+        }
+
+        return {
+            name,
+            type: 'array',
+            items: { type },
+        };
+    }
+
+    if (items.type === 'object') {
+        const module = buildObjectTypeProperty(schema, items, name);
+        const prop = moduleToArrayModule(name, module);
+
+        return prop;
+    }
+
+    return { name, type: 'array', items };
+}
+
+function buildProperty(schema, properties, name) {
+    const property = properties[name];
+    const { type } = property;
+
+    if (Object.hasOwn(property, '$ref')) {
+        return buildRefProperty(schema, property, name);
+    }
+
+    if (type === 'object') {
+        return buildObjectTypeProperty(schema, property, name);
+    }
+
+    if (type === 'array') {
+        return buildArrayTypeProperty(schema, property, name);
+    }
+
+    return { name, type };
 }
 
 function assembleSchema(schema, module) {
@@ -164,11 +204,8 @@ function createPropSchema(modulePath) {
     const schema = createSchema(modulePath);
 
     const componentInterfaceName = getInterfaceNameByModuleName(schema, moduleName, 'Props');
-    if (!componentInterfaceName) {
-        throw `${modulePath} needs to define the ${componentInterfaceName} interface`;
-    }
-
     const componentRootSchema = schema.definitions[componentInterfaceName];
+
     const component = assembleSchema(schema, componentRootSchema);
     const loader = buildLoader(schema);
 

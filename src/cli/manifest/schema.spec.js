@@ -4,6 +4,10 @@ const { createPropSchema } = require('./schema');
 jest.mock('ts-json-schema-generator');
 
 describe('createPropSchema()', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
     test('should generate a valid component schema without loader', () => {
         const desiredComponent = {
             type: 'object',
@@ -346,6 +350,100 @@ describe('createPropSchema()', () => {
         expect(component.required).toEqual(desiredComponent.required);
     });
 
+    test('should generate a valid component using with data type array', () => {
+        const desiredComponent = {
+            type: 'object',
+            required: ['title', 'lead', 'banner', 'c2a', 'regulaments', 'complex'],
+            properties: [
+                { name: 'title', type: 'string' },
+                { name: 'lead', type: 'string' },
+                {
+                    name: 'banner',
+                    type: 'object',
+                    required: ['images'],
+                    properties: [{ name: 'images', type: 'array', items: { type: 'RichText' } }],
+                },
+                {
+                    name: 'regulaments',
+                    type: 'object',
+                    required: ['link'],
+                    properties: [{ name: 'link', type: 'array', items: { type: 'string' } }],
+                },
+                {
+                    name: 'complex',
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        required: ['name', 'age'],
+                        properties: [{ name: 'name', type: 'string' }, { name: 'age', type: 'number' }],
+                    }
+                },
+                {
+                    name: 'c2a',
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        required: ['label', 'action'],
+                        properties: [{ name: 'label', type: 'string' }, { name: 'action', type: 'string' }]
+                    }
+                }
+            ],
+        };
+
+        tsj.createGenerator.mockImplementationOnce(() => ({
+            createSchema: () => ({
+                '$schema': 'http://json-schema.org/draft-07/schema#',
+                definitions: {
+                    HeaderProps: {
+                        type: 'object',
+                        properties: {
+                            title: { type: 'string' },
+                            lead: { type: 'string' },
+                            banner: {
+                                type: 'object',
+                                properties: { images: { type: 'array', items: { '$ref': '#/definitions/RichText' } } },
+                                required: ['images'],
+                                additionalProperties: false
+                            },
+                            regulaments: {
+                                type: 'object',
+                                properties: { link: { type: 'array', items: { type: 'string' } } },
+                                required: ['link'],
+                                additionalProperties: false
+                            },
+                            complex: {
+                                type: 'array',
+                                items: {
+                                    type: 'object',
+                                    properties: { name: { type: 'string' }, age: { type: 'number' } },
+                                    required: ['name', 'age'],
+                                    additionalProperties: false
+                                }
+                            },
+                            c2a: { type: 'array', items: { '$ref': '#/definitions/Cta' } },
+                        },
+                        required: ['title', 'lead', 'banner', 'c2a', 'regulaments', 'complex'],
+                        additionalProperties: false
+                    },
+                    Cta: {
+                        type: 'object',
+                        properties: { label: { type: 'string' }, action: { type: 'string' } },
+                        required: ['label', 'action'],
+                        additionalProperties: false
+                    },
+                }
+            })
+        }));
+
+        const modulePath = './src/sections/header.tsx';
+        const { component, loader } = createPropSchema(modulePath);
+
+        expect(loader).toBe(undefined);
+        expect(component.type).toEqual(desiredComponent.type);
+        expect(component.properties).toEqual(desiredComponent.properties);
+        expect(component.required).toEqual(desiredComponent.required);
+    });
+
     test('should throw an exception case the modulePath is invalid', () => {
         expect(() => {
             createPropSchema();
@@ -353,6 +451,15 @@ describe('createPropSchema()', () => {
 
         expect(() => {
             createPropSchema('wrong/module/file');
+        }).toThrow()
+    });
+
+    test('should throw an exception case the schema can`t be generated', () => {
+        tsj.createGenerator.mockImplementationOnce(() => {
+            throw Error;
+        });
+        expect(() => {
+            createPropSchema('./src/sections/header.tsx');
         }).toThrow()
     });
 
