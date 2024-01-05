@@ -455,6 +455,7 @@ describe('createPropSchema()', () => {
     });
 
     test('should throw an exception case the schema can`t be generated', () => {
+        jest.spyOn(console, "log").mockImplementation(() => { });
         tsj.createGenerator.mockImplementationOnce(() => {
             throw Error;
         });
