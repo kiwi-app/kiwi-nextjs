@@ -10,6 +10,7 @@ jest.mock('../infrastructure/file-system');
 jest.mock('ts-json-schema-generator');
 
 const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
+jest.spyOn(console, "log").mockImplementation(() => { });
 
 describe('manifest()', () => {
     beforeEach(() => {
@@ -19,7 +20,7 @@ describe('manifest()', () => {
     test('should generate the manifest with a simple section', async () => {
         fileSystem.ls.mockReturnValue(['header.tsx']);
         fileSystem.fileNameFromPath.mockReturnValue('header');
-        fileSystem.kebabToTitle.mockReturnValue('Header');
+        fileSystem.anycaseToTitle.mockReturnValue('Header');
 
         tsj.createGenerator.mockImplementationOnce(() => ({
             createSchema: () => ({
@@ -72,7 +73,7 @@ describe('manifest()', () => {
     test('should include the loader in the manifest', async () => {
         fileSystem.ls.mockReturnValue(['products.tsx']);
         fileSystem.fileNameFromPath.mockReturnValue('products');
-        fileSystem.kebabToTitle.mockReturnValue('Products');
+        fileSystem.anycaseToTitle.mockReturnValue('Products');
 
         tsj.createGenerator.mockImplementationOnce(() => ({
             createSchema: () => ({
@@ -151,7 +152,7 @@ describe('manifest()', () => {
     test('should include the generic loader in the manifest', async () => {
         fileSystem.ls.mockReturnValue(['products.tsx']);
         fileSystem.fileNameFromPath.mockReturnValue('products');
-        fileSystem.kebabToTitle.mockReturnValue('Products');
+        fileSystem.anycaseToTitle.mockReturnValue('Products');
 
         tsj.createGenerator.mockImplementationOnce(() => ({
             createSchema: () => ({
@@ -217,7 +218,7 @@ describe('manifest()', () => {
     test('should include the nested complex interface', async () => {
         fileSystem.ls.mockReturnValue(['header.tsx']);
         fileSystem.fileNameFromPath.mockReturnValue('header');
-        fileSystem.kebabToTitle.mockReturnValue('Header');
+        fileSystem.anycaseToTitle.mockReturnValue('Header');
 
         tsj.createGenerator.mockImplementationOnce(() => ({
             createSchema: () => ({
@@ -302,13 +303,13 @@ describe('manifest()', () => {
 
     test('should generate the manifest with multiple sections', async () => {
         fileSystem.ls.mockReturnValue(['header.tsx', 'content.tsx']);
-        fileSystem.fileNameFromPath.mockImplementation((param) => {
-            return param.indexOf('header') !== -1
+        fileSystem.fileNameFromPath.mockImplementation((path) => {
+            return path.indexOf('header') !== -1
                 ? 'header'
                 : 'content';
         });
-        fileSystem.kebabToTitle.mockImplementation((param) => {
-            return param.indexOf('header') !== -1
+        fileSystem.anycaseToTitle.mockImplementation((originCase, str) => {
+            return str.indexOf('header') !== -1
                 ? 'Header'
                 : 'Content';
         });
