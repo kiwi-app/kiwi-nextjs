@@ -1,24 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, useMemo } from 'react';
 import {
   getLoaderProps,
   mergeManifest,
   sendSectionClickEvent,
   sendSectionHoverEvent,
 } from '../../helpers';
-import { LiveEditorMessage, Page, LoaderRequest } from '../../types';
+import { LiveEditorMessage, Page, LoaderRequest, Section } from '../../types';
 
 export type CatchAllClientProps = {
   page: Page;
+  children: Map<string, JSX.Element>;
   requestInfo: LoaderRequest;
 };
 
 export default (externalManifest: any) =>
-  function CatchAllClient({ page: initialPage, requestInfo }: CatchAllClientProps) {
+  function CatchAllClient({ page: initialPage, requestInfo, children }: CatchAllClientProps) {
     const [page, setPage] = useState<Page>(initialPage);
     const [liveEditing, setLiveEditing] = useState<boolean>(false);
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
     const [hoveredSectionId, setHoveredSectionId] = useState<string | null>();
+    const [useLocalSections, setUseLocalSections] = useState(false);
     const manifest = mergeManifest(externalManifest);
+
+    const sectionsMap: Map<string, Section> = useMemo(() => {
+      const map: Map<string, Section> = new Map();
+      for (const section of page.sections) {
+        map.set(section.id, section);
+      }
+
+      return map;
+    }, [page.sections]);
 
     useEffect(() => {
       let isInsideIframe = false;
@@ -57,15 +68,20 @@ export default (externalManifest: any) =>
       }
     };
 
-    const updatePageWithLoaders = async (newPage: Page) => {
+    const updatePageWithLoaders = async (externalPage: Page) => {
+      setUseLocalSections(true);
+
+      const newPage = { ...externalPage };
+
       for (let idx = 0; idx < newPage.sections?.length; idx++) {
         const section = newPage.sections[idx];
         const sectionModule = manifest.sections[section.type];
+        const oldSection = sectionsMap.get(section.id);
 
         newPage.sections[idx].props = await getLoaderProps(
           requestInfo,
           section.props,
-          page.sections?.[idx]?.props || {},
+          oldSection?.props || {},
           sectionModule,
           manifest,
           true,
@@ -79,8 +95,13 @@ export default (externalManifest: any) =>
       <div className="flex flex-col items-center justify-center">
         <div className="flex flex-col w-full">
           {page?.sections?.map((section, idx) => {
-            const Component = manifest.sections[section.type].module.default;
             const id = `${section.type}-${idx}`;
+            const module = manifest.sections[section.type].module;
+
+            // @ts-ignore
+            const SuspenseFallback = module.Loading ? <module.Loading /> : '';
+
+            const Component = module.default;
 
             if (!Component) return null;
             return (
@@ -115,8 +136,12 @@ export default (externalManifest: any) =>
                     }}
                   />
                 )}
-                {/* @ts-ignore */}
-                <Component {...section.props} />
+                <Suspense fallback={SuspenseFallback}>
+                  {
+                    // @ts-ignore
+                    useLocalSections ? <Component {...section.props} /> : children.get(section.id)
+                  }
+                </Suspense>
               </section>
             );
           })}

@@ -1,6 +1,7 @@
 import { cookies, headers } from 'next/headers';
-import { getLoaderProps, getPageConfig, mergeManifest } from '../../helpers';
-import { LoaderRequest, SearchParams } from '../../types';
+import { getPageConfig, mergeManifest } from '../../helpers';
+import { LoaderRequest, SearchParams, Section } from '../../types';
+import SuspenseSection from './SuspenseSection';
 
 export type CatchAllProps = { params: { kiwi: string[] }; searchParams: SearchParams };
 
@@ -44,17 +45,23 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
       }
     }
 
+    const children: Map<string, JSX.Element> = new Map();
     for (let idx = 0; idx < page.sections?.length; idx++) {
       const section = page.sections[idx];
       const sectionModule = manifest.sections[section.type];
 
-      page.sections[idx].props = await getLoaderProps(
-        requestInfo,
-        section.props,
-        {},
-        sectionModule,
-        manifest,
-        isLive,
+      if (!sectionModule) continue;
+
+      children.set(
+        section.id,
+        <SuspenseSection
+          isLive={isLive}
+          manifest={manifest}
+          request={requestInfo}
+          section={section as Section}
+          sectionModule={sectionModule}
+          key={`suspense_${section.type}_${idx}`}
+        />,
       );
     }
 
@@ -63,7 +70,7 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
       requestInfo,
     };
 
-    if (isLive) return <ClientComponent {...props} />;
-    return <ServerComponent {...props} manifest={mergedManifest} />;
+    if (isLive) return <ClientComponent {...props} children={children} />;
+    return <ServerComponent {...props} children={children} manifest={mergedManifest} />;
   };
 }

@@ -43,7 +43,6 @@ module.exports = async function (args) {
       type: 'toggle',
       name: 'root',
       message: 'Enable kiwi to manage your index page (/)?',
-      hint: 'it will remove your root page component',
       initial: 'Yes',
       active: 'Yes',
       inactive: 'No',

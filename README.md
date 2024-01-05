@@ -11,8 +11,10 @@ This project contains a CLI with two actions:
 
 You should configure this lib by creating the following env vars:
 
-- NEXT_PUBLIC_KIWI_ADMIN_URL
-- NEXT_PUBLIC_KIWI_API_KEY
+- KIWI_ADMIN_URL
+- KIWI_API_KEY
+
+If you want to remove or change cache time, you can set `KIWI_CACHE_TTL` env var (seconds)
 
 ## Sections
 
@@ -130,12 +132,43 @@ A function called "Loader" must be exported by your section, this function recei
 - props: properties used to do some operation that you defined in your loader, this properties are configured in **kiwi admin**
 
 You will receive the "loaded props" in your "loader" prop.
+
+### Placeholder
+
+If you want to show something while the section is mounting, you can export a "Loading" component that will be attached on Suspense fallback while the section finishes the loader request.
+
+```ts
+// Component
+interface ProductsLoader {...}
+
+export interface ProductsProps {...}
+
+export default function Products(props: ProductsProps) {
+  return ...;
+}
+
+// Loader
+export interface ProductsLoaderProps {...}
+
+export async function Loader(
+  req: LoaderRequest,
+  props: ProductsLoaderProps,
+): Promise<ProductsLoader> {
+ ...
+}
+
+// Loading
+export function Loading() {
+  return <p>You will see me while this section is loading</p>
+}
+```
+
 <br />
 <br />
-<br />
+
 ![section with loader](docs/section_with_loader.png)
 
-> **IMPORTANT**: The exported loader function **MUST** be called "Loader" and your "receiver" prop **MUST** be called "loader". So that kiwi admin can handle without side effects.
+> **IMPORTANT**: The exported loader function **MUST** be called "Loader", your "receiver" prop **MUST** be called "loader" and your loading placeholder **MUST** be called "Loading". So that kiwi can handle without side effects.
 
 ## Dynamic pages
 
@@ -159,7 +192,7 @@ export default function Product(props: ProductsProps) {
 }
 
 // Loader
-// interface used only for typing the "params" object
+// interface used only for locally type the "params" object
 interface ProductParams {
   id: string;
 }

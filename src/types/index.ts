@@ -4,7 +4,7 @@ export type Page = {
   name: string;
   path: string;
   updatedAt: Date;
-  sections: { type: string; props: { [key: string]: any } }[];
+  sections: Section[];
 };
 
 export type LiveEditorMessage = {
@@ -13,14 +13,36 @@ export type LiveEditorMessage = {
   data: { [key: string]: any };
 };
 
-export type SchemaProperty = {
+export const primitiveTypes = ['string', 'symbol', 'bigint', 'number', 'boolean'] as const;
+
+export type ObjectSchema = {
+  type: 'object';
   name: string;
-  type: string;
   description?: string;
-  items?: { type: string };
-  properties?: { [T: string]: { type: string } };
+  properties?: SchemaProperty[];
   required?: string[];
 };
+
+export type ArraySchema = {
+  type: 'array';
+  name: string;
+  items: { type: (typeof primitiveTypes)[number] } | SchemaProperty;
+  description?: string;
+};
+
+export type PrimitiveSchema = {
+  type: (typeof primitiveTypes)[number];
+  name: string;
+  description?: string;
+};
+
+export type CustomSchema = {
+  type: 'RichText';
+  name: string;
+  description?: string;
+};
+
+export type SchemaProperty = ObjectSchema | ArraySchema | PrimitiveSchema | CustomSchema;
 
 export type Schema = {
   properties: SchemaProperty[];
@@ -29,9 +51,17 @@ export type Schema = {
   propsFromLoaderRequest?: boolean;
 };
 
+export type Section = {
+  id: string;
+  type: string;
+  props: { [key: string]: any };
+  schema: { component: Schema; loader?: Schema };
+};
+
 export type ExportedModule = {
   module: {
     default: JSX.Element | Function;
+    Loading?: JSX.Element | Function;
     Loader?: (req: LoaderRequest, props: any) => Promise<any>;
   };
   schema: { component: Schema; loader?: Schema };

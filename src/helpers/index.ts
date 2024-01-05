@@ -1,11 +1,18 @@
-import { Manifest, LiveEditorMessage, Page, ExportedModule, LoaderRequest } from '../types';
+import {
+  Manifest,
+  LiveEditorMessage,
+  Page,
+  ExportedModule,
+  LoaderRequest,
+  Section,
+} from '../types';
 import internalManifest from '../../manifest';
 
 const {
-  NEXT_PUBLIC_KIWI_ADMIN_URL,
-  NEXT_PUBLIC_KIWI_API_KEY,
+  KIWI_ADMIN_URL,
+  KIWI_API_KEY,
   /* 1 day */
-  NEXT_PUBLIC_KIWI_CACHE_TTL = '86400',
+  KIWI_CACHE_TTL = '86400',
 } = process.env;
 
 export type EventData = {
@@ -44,13 +51,15 @@ export async function getLoaderProps(
   const loadersProps: string[] = [];
   const _loaderMetadata: { [key: string]: any } = {};
 
-  for (const property of schema?.component?.properties || []) {
-    const { name, type } = property;
-    const loaderReference = manifest.loaders[`@/loaders/${type}`];
+  if (manifest.loaders) {
+    for (const property of schema?.component?.properties || []) {
+      const { name, type } = property;
+      const loaderReference = manifest.loaders[`@/loaders/${type}`];
 
-    if (loaderReference && props[name]) {
-      loadersProps.push(name);
-      loaders.push((loaderReference.module.default as Function)(props[name]));
+      if (loaderReference && props[name]) {
+        loadersProps.push(name);
+        loaders.push((loaderReference.module.default as Function)(props[name]));
+      }
     }
   }
 
@@ -109,22 +118,19 @@ export async function getLoaderProps(
 }
 
 export const getPageConfig = async (site: string, page: string): Promise<Page | null> => {
-  if (!NEXT_PUBLIC_KIWI_ADMIN_URL) throw 'kiwi admin url must be informed';
-  if (!NEXT_PUBLIC_KIWI_API_KEY) throw 'kiwi api key must be informed';
+  if (!KIWI_ADMIN_URL) throw 'kiwi admin url must be informed';
+  if (!KIWI_API_KEY) throw 'kiwi api key must be informed';
 
   try {
     const request = await fetch(
-      `${NEXT_PUBLIC_KIWI_ADMIN_URL}/api/sites/${site}/page?page=${page.replace(
-        /kiwi\/live(\/*)/g,
-        '',
-      )}`,
+      `${KIWI_ADMIN_URL}/api/sites/${site}/page?page=${page.replace(/kiwi\/live(\/*)/g, '')}`,
       {
         // @ts-ignore
         next: {
-          revalidate: Number(NEXT_PUBLIC_KIWI_CACHE_TTL),
+          revalidate: Number(KIWI_CACHE_TTL),
         },
         headers: {
-          'x-api-key': `${NEXT_PUBLIC_KIWI_API_KEY}`,
+          'x-api-key': `${KIWI_API_KEY}`,
         },
       },
     );
