@@ -1,7 +1,7 @@
 const fs = require('fs');
 const {
     ls,
-    kebabToTitle,
+    anycaseToTitle,
     fileNameFromPath,
 } = require('./file-system');
 
@@ -43,21 +43,38 @@ describe('fs()', () => {
     });
 });
 
-describe('kebabToTitle()', () => {
-    test('should return a TitleCase from kebab-case', () => {
+describe('anycaseToTitle()', () => {
+    test('should return a TitleCase from kebab-case, snake_case, TitleCase and camelCase', () => {
         expect(
-            kebabToTitle('this-is-kebab-lowercase')
-        ).toEqual('ThisIsKebabLowercase')
+            anycaseToTitle('kebab', 'this-is-kebab-lowercase')
+        ).toEqual('ThisIsKebabLowercase');
 
         expect(
-            kebabToTitle('THIS-IS-KEBAB-UPPERCASE')
-        ).toEqual('ThisIsKebabUppercase')
+            anycaseToTitle('kebab', 'THIS-IS-KEBAB-UPPERCASE')
+        ).toEqual('ThisIsKebabUppercase');
+
+        expect(
+            anycaseToTitle('snake', 'this_is_snake_lowercase')
+        ).toEqual('ThisIsSnakeLowercase');
+
+        expect(
+            anycaseToTitle('snake', 'THIS_IS_SNAKE_UPPERCASE')
+        ).toEqual('ThisIsSnakeUppercase');
+
+        expect(
+            anycaseToTitle('camel', 'thisIsCamelCase')
+        ).toEqual('ThisIsCamelCase');
+
+        expect(
+            anycaseToTitle('title', 'ThisIsTitleCase')
+        ).toEqual('ThisIsTitleCase');
     });
 
-    test('should return null if parameter is != string', () => {
-        expect(kebabToTitle(123)).toBeNull();
-        expect(kebabToTitle()).toBeNull();
-        expect(kebabToTitle(null)).toBeNull();
+    test('should return null if parameter is != string or originCase is not valid', () => {
+        expect(anycaseToTitle('kebab', 123)).toBeNull();
+        expect(anycaseToTitle('kebab')).toBeNull();
+        expect(anycaseToTitle('kebab', null)).toBeNull();
+        expect(anycaseToTitle('not-valid', 'kebab-case')).toBeNull();
     });
 });
 
@@ -66,10 +83,26 @@ describe('fileNameFromPath()', () => {
         expect(
             fileNameFromPath('./src/sections/header.tsx')
         ).toEqual('header')
-        
+
         expect(
             fileNameFromPath('/Projects/kiwi-nextjs/src/sections/header.tsx')
         ).toEqual('header')
+
+        expect(
+            fileNameFromPath('/Projects/kiwi-nextjs/src/sections/header-kebab.tsx')
+        ).toEqual('header-kebab')
+
+        expect(
+            fileNameFromPath('/Projects/kiwi-nextjs/src/sections/header-kebab-case.tsx')
+        ).toEqual('header-kebab-case')
+
+        expect(
+            fileNameFromPath('/Projects/kiwi-nextjs/src/sections/header_snake.tsx')
+        ).toEqual('header_snake')
+
+        expect(
+            fileNameFromPath('/Projects/kiwi-nextjs/src/sections/header_snake_case.tsx')
+        ).toEqual('header_snake_case')
 
         expect(
             fileNameFromPath('./src/sections/header.txt', ['txt'])
