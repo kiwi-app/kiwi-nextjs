@@ -1,28 +1,18 @@
-const root = require('path').resolve('./src/app/');
-const { writeFileSync, mkdirSync } = require('fs');
-const manifest = require('../manifest');
+const appRoot = require('path').resolve('./src/app/');
+const { mkdirSync } = require('fs');
 const {
-  prettyFileContent,
-  prettyProtectedFileContent
+  deployStructure,
 } = require('../infrastructure/commons');
 const templates = require('./templates');
 
-const SERVER_COMPONENT_PATH = `${root}/(kiwi)/[...kiwi]`;
-const API_PATH = `${root}/(kiwi)/api/kiwi/[...kiwi]`;
+const manifest = require('../manifest');
+const customUserSetup = require('./custom-user-setup');
+const updateTsConfig = require('./update-ts-config');
 
-function deployStructure(structure) {
-  structure.map(struct => {
-    const path = struct.path
-    const files = Object.keys(struct.files);
+const SERVER_COMPONENT_PATH = `${appRoot}/(kiwi)/[...kiwi]`;
+const API_PATH = `${appRoot}/(kiwi)/api/kiwi/[...kiwi]`;
 
-    files.map(file => {
-      const prettyContent = prettyProtectedFileContent(struct[file]);
-      writeFileSync(`${path}/${file}`, prettyContent);
-    });
-  });
-}
-
-const createKiwiDirectory = () => {
+function createKiwiDirectory() {
   mkdirSync(SERVER_COMPONENT_PATH, { recursive: true });
   mkdirSync(API_PATH, { recursive: true });
 };
@@ -63,44 +53,9 @@ function createKiwiStructure() {
   deployStructure(kiwiStructureTemplate);
 }
 
-const updateTsConfig = () => {
-  let newTsConfig;
-  const tsConfigRoot = path.resolve();
+async function init(args) {
+  customUserSetup();
 
-  try {
-    const configFile = require(`${tsConfigRoot}/tsconfig.json`);
-
-    if (configFile.compilerOptions) {
-      configFile.compilerOptions.paths = {
-        ...configFile.compilerOptions.paths,
-        '@manifest': ['./manifest.ts'],
-      };
-    } else {
-      configFile['compilerOptions'] = {
-        paths: {
-          '@manifest': ['./manifest.ts'],
-        },
-      };
-    }
-
-    newTsConfig = { ...configFile };
-  } catch (_) {
-    newTsConfig = {
-      compilerOptions: {
-        paths: {
-          '@manifest': ['./manifest.ts'],
-        },
-      },
-    };
-  }
-
-  const formattedTsConfig = prettyFileContent(newTsConfig);
-  writeFileSync(`${tsConfigRoot}/tsconfig.json`, JSON.stringify(formattedTsConfig), {
-    encoding: 'utf-8',
-  });
-};
-
-function init(args) {
   manifest();
   console.log('✔️ Manifest Assembled');
 

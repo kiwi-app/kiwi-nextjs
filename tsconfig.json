@@ -18,6 +18,6 @@
     "sourceMap": true,
     "outDir": "build",
     "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": true
   }
 }

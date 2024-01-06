@@ -1,4 +1,6 @@
-const pageTemplate = `
+const { prettyProtectedFileContent } = require('../infrastructure/commons');
+
+const pageTemplate = prettyProtectedFileContent(`
     import manifest from '@manifest';
     import { CatchAll } from '@kiwi-app/kiwi-nextjs';
     import ClientComponent from './client';
@@ -7,9 +9,9 @@ const pageTemplate = `
     const Page = CatchAll(manifest, ClientComponent, ServerComponent);
 
     export default Page;    
-`;
+`);
 
-const clientCodeTemplate = `
+const clientCodeTemplate = prettyProtectedFileContent(`
     'use client'
 
     import manifest from '@manifest';
@@ -18,19 +20,19 @@ const clientCodeTemplate = `
     const Page = CatchAllClient(manifest);
 
     export default Page;  
-`;
+`);
 
-const serverCodeTemplate = `
+const serverCodeTemplate = prettyProtectedFileContent(`
     import { CatchAllServer } from '@kiwi-app/kiwi-nextjs';
     export default CatchAllServer;    
-`;
+`);
 
-const routeTemplate = `
+const routeTemplate = prettyProtectedFileContent(`
     import manifest from '@manifest';
     import { LiveRoute } from '@kiwi-app/kiwi-nextjs';
 
     export const { GET, POST, OPTIONS, PATCH } = LiveRoute(manifest);
-`;
+`);
 
 module.exports = {
     pageTemplate,

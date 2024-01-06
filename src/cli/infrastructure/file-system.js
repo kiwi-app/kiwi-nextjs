@@ -1,4 +1,4 @@
-const { readdirSync } = require('fs');
+const { readdirSync, writeFileSync } = require('fs');
 
 function ls(path) {
     if (!path && typeof path != 'string')
@@ -10,6 +10,14 @@ function ls(path) {
     } catch (e) {
         return null;
     }
+}
+
+function put(content, filePath) {
+    writeFileSync(filePath, content);
+}
+
+function load(filePath) {
+    return require(filePath);
 }
 
 function fileNameFromPath(filePath, extensions = ['tsx', 'ts']) {
@@ -68,6 +76,8 @@ function anycaseToTitle(caseOrigin, str) {
 
 module.exports = {
     ls,
+    put,
+    load,
     anycaseToTitle,
     fileNameFromPath,
 };

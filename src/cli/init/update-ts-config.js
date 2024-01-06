@@ -1,0 +1,41 @@
+const root = require('path').resolve();
+const { existsSync } = require('fs');
+const { put, load } = require('../infrastructure/file-system');
+const { prettyFileContent } = require('../infrastructure/commons');
+
+function loadTsConfig(tsConfigPath) {
+    if (existsSync(tsConfigPath)) {
+        try {
+            const tsConfig = load(tsConfigPath);
+            return tsConfig;
+        } catch (e) {
+            throw 'It was not possible to open the tsconfig.json file.';
+        }
+    }
+
+    const tsConfig = {};
+
+    return tsConfig;
+}
+
+function updateTsConfig() {
+    const tsConfigPath = `${root}/tsconfig.json`;
+    const tsConfig = loadTsConfig(tsConfigPath);
+
+    const compilerOptions = tsConfig.compilerOptions || { paths: {} };
+    const updatedTsConfig = {
+        ...tsConfig,
+        compilerOptions: {
+            ...compilerOptions,
+            paths: {
+                ...compilerOptions.paths,
+                '@manifest': ['./manifest.ts'],
+            }
+        }
+    }
+
+    const formattedTsConfig = prettyFileContent(JSON.stringify(updatedTsConfig));
+    put(formattedTsConfig, tsConfigPath);
+};
+
+module.exports = updateTsConfig;

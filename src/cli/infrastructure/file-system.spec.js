@@ -1,22 +1,25 @@
 const fs = require('fs');
 const {
     ls,
+    put,
     anycaseToTitle,
     fileNameFromPath,
 } = require('./file-system');
 
 jest.mock('fs');
 
-describe('fs()', () => {
-    fs.readdirSync.mockImplementation((path) => {
-        if (path === 'path/empty') {
-            return [];
-        }
-        if (path === 'path/no-empty') {
-            return ['file1.txt', 'file2.txt'];
-        }
-        throw 'path/exception';
-    });
+describe('ls()', () => {
+    beforeAll(() => {
+        fs.readdirSync.mockImplementation((path) => {
+            if (path === 'path/empty') {
+                return [];
+            }
+            if (path === 'path/no-empty') {
+                return ['file1.txt', 'file2.txt'];
+            }
+            throw 'path/exception';
+        });
+    })
 
     test('should return a list of files in the directory', () => {
         const files = ls('path/no-empty');
@@ -40,6 +43,37 @@ describe('fs()', () => {
     test('should return null case path isn`t valid', () => {
         const files = ls(null);
         expect(files).toBeNull();
+    });
+});
+
+describe('put()', () => {
+    beforeAll(() => {
+        fs.writeFileSync.mockImplementation((filePath, content) => {
+            if (filePath === 'path/sucess') {
+                return;
+            }
+
+            throw 'path/exception';
+        });
+    });
+
+    test('should write the file without errors', () => {
+        const filePath = 'path/sucess';
+        const content = 'This is the test content';
+
+        expect(() => {
+            put(content, filePath);
+        }).not.toThrow();
+        expect(fs.writeFileSync).toHaveBeenCalledWith(filePath, content);
+    });
+
+    test('should throw exception in case of error', () => {
+        const filePath = 'path/exception';
+        const content = 'This is the test content';
+
+        expect(() => {
+            put(content, filePath);
+        }).toThrow();
     });
 });
 

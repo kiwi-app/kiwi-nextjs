@@ -1,18 +1,16 @@
 const root = require('path').resolve();
+const { put } = require('./file-system');
 const prettier = require('prettier');
 const packageJson = require(`${root}/package.json`);
 
-const userKiwiConfig = packageJson.KiwiConfig || {};
-const defaultKiwiConfig = {
+const userKiwiConfig = packageJson.kiwiConfig || {};
+const kiwiConfig = {
     moduleFileNameCase: 'kebab',
     ...userKiwiConfig,
 };
 
-async function prettyFileContent(content) {
-    const formattedOutput = await prettier.format(content, {
-        parser: "babel-ts",
-    });
-
+async function prettyFileContent(content, parser = 'babel-ts') {
+    const formattedOutput = await prettier.format(content, { parser });
     return formattedOutput;
 }
 
@@ -28,15 +26,43 @@ async function prettyProtectedFileContent(content) {
 }
 
 function getKiwiConfig(key) {
-    if (!Object.hasOwn(defaultKiwiConfig, key))
+    if (!Object.hasOwn(kiwiConfig, key))
         return null;
 
-    const config = defaultKiwiConfig[key];
-    return config;
+    const value = kiwiConfig[key];
+    return value;
+}
+
+async function setPackageJsonProp(prop, value) {
+    const newPackageJson = {
+        ...packageJson,
+        [prop]: value
+    };
+
+    const formattedContent = await prettyFileContent(
+        JSON.stringify(newPackageJson),
+        'json',
+    );
+
+    put(formattedContent, `${root}/package.json`);
+};
+
+function deployStructure(structure) {
+    structure.map(struct => {
+        const path = struct.path
+        const files = Object.keys(struct.files);
+
+        files.map(file => {
+            const content = struct.files[file];
+            put(content, `${path}/${file}`);
+        });
+    });
 }
 
 module.exports = {
     prettyFileContent,
     prettyProtectedFileContent,
     getKiwiConfig,
+    setPackageJsonProp,
+    deployStructure,
 };
