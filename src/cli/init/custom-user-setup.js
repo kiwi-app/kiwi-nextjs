@@ -32,19 +32,19 @@ async function getUseKiwiRootPage() {
 async function customUserSetup() {
     const name = await getPackageName();
     if (name !== packageJson.name) {
-        console.log(`✔️ new module name: ${name}`);
+        console.log(`✔️  Site name changed to ${name}`);
         await setPackageJsonProp('name', name);
     }
 
-    const indexPagePath = `${root}/page.tsx`;
+    const indexPagePath = `${root}/src/app/page.tsx`;
     if (existsSync(indexPagePath)) {
         const useKiwiRootPage = await getUseKiwiRootPage();
         if (useKiwiRootPage) {
             try {
                 unlinkSync(indexPagePath);
-                console.log('✔️ kiwi is your index page');
+                console.log('✔️  Kiwi is on your index page');
             } catch (e) {
-                console.log('✖️ it wasn`t possible to remove your index page component')
+                console.log('✖️  It wasn`t possible to remove your index page component')
             }
         }
     }

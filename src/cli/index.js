@@ -15,7 +15,7 @@ async function executeCli() {
     try {
       await actions[action](args);
     } catch (e) {
-      console.log(`\n\n✖️ ${e}\n\n`);
+      console.log(`\n\n✖️  ${e}\n\n`);
     }
   }
   else {

@@ -57,16 +57,15 @@ async function init(args) {
   await customUserSetup();
 
   await manifest();
-  console.log('✔️ Manifest Assembled');
 
   await updateTsConfig();
-  console.log('✔️ Manifest alias');
+  console.log('✔️  Manifest alias');
 
   await createKiwiDirectory();
-  console.log('✔️ Kiwi directories');
+  console.log('✔️  Kiwi directories');
 
   await createKiwiStructure();
-  console.log('✔️ Kiwi structure');
+  console.log('✔️  Kiwi structure');
 }
 
 module.exports = init;

@@ -109,7 +109,7 @@ describe('customUserSetup()', () => {
         expect(prompt).toHaveBeenCalledTimes(2);
         expect(setPackageJsonProp).toHaveBeenCalled();
         expect(unlinkSync).toHaveBeenCalled();
-        expect(log).toHaveBeenCalledWith('✖️ it wasn`t possible to remove your index page component');
+        expect(log).toHaveBeenCalledWith('✖️ It wasn`t possible to remove your index page component');
     });
 
     test('should not prompt for kiwi index if index page file doesnt exist', async () => {

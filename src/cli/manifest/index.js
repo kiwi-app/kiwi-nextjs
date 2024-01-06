@@ -59,8 +59,8 @@ async function manifest(args) {
 
   const formattedOutput = await prettyProtectedFileContent(output);
 
-  console.log('Writing manifest...');
   writeFileSync(`${root}/manifest.ts`, formattedOutput, { encoding: 'utf-8' });
+  console.log('✔️  Manifest assembled');
 }
 
 module.exports = manifest;
