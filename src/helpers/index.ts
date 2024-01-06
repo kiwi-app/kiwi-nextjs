@@ -1,11 +1,4 @@
-import {
-  Manifest,
-  LiveEditorMessage,
-  Page,
-  ExportedModule,
-  LoaderRequest,
-  Section,
-} from '../types';
+import { Manifest, LiveEditorMessage, Page, ExportedModule, LoaderRequest } from '../types';
 import internalManifest from '../../manifest';
 
 const {

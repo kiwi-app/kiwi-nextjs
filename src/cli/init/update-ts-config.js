@@ -4,38 +4,38 @@ const { put, load } = require('../infrastructure/file-system');
 const { prettyFileContent } = require('../infrastructure/commons');
 
 function loadTsConfig(tsConfigPath) {
-    if (existsSync(tsConfigPath)) {
-        try {
-            const tsConfig = load(tsConfigPath);
-            return tsConfig;
-        } catch (e) {
-            throw new Error('It was not possible to open the tsconfig.json file.');
-        }
+  if (existsSync(tsConfigPath)) {
+    try {
+      const tsConfig = load(tsConfigPath);
+      return tsConfig;
+    } catch (e) {
+      throw new Error('It was not possible to open the tsconfig.json file.');
     }
+  }
 
-    const tsConfig = {};
+  const tsConfig = {};
 
-    return tsConfig;
+  return tsConfig;
 }
 
 async function updateTsConfig() {
-    const tsConfigPath = `${root}/tsconfig.json`;
-    const tsConfig = loadTsConfig(tsConfigPath);
+  const tsConfigPath = `${root}/tsconfig.json`;
+  const tsConfig = loadTsConfig(tsConfigPath);
 
-    const compilerOptions = tsConfig.compilerOptions || { paths: {} };
-    const updatedTsConfig = {
-        ...tsConfig,
-        compilerOptions: {
-            ...compilerOptions,
-            paths: {
-                ...compilerOptions.paths,
-                '@manifest': ['./manifest.ts'],
-            }
-        }
-    }
+  const compilerOptions = tsConfig.compilerOptions || { paths: {} };
+  const updatedTsConfig = {
+    ...tsConfig,
+    compilerOptions: {
+      ...compilerOptions,
+      paths: {
+        ...compilerOptions.paths,
+        '@manifest': ['./manifest.ts'],
+      },
+    },
+  };
 
-    const formattedTsConfig = await prettyFileContent(JSON.stringify(updatedTsConfig), 'json');
-    put(formattedTsConfig, tsConfigPath);
-};
+  const formattedTsConfig = await prettyFileContent(JSON.stringify(updatedTsConfig), 'json');
+  put(formattedTsConfig, tsConfigPath);
+}
 
 module.exports = updateTsConfig;

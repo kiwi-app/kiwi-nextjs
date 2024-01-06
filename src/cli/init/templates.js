@@ -11,16 +11,17 @@ const pageTemplate = prettyProtectedFileContent(`
     export default Page;    
 `);
 
-const clientCodeTemplate = prettyProtectedFileContent(`
-    'use client'
-
+const clientCodeTemplate = prettyProtectedFileContent(
+  `
     import manifest from '@manifest';
     import { CatchAllClient } from '@kiwi-app/kiwi-nextjs';
     
     const Page = CatchAllClient(manifest);
 
     export default Page;  
-`);
+`,
+  '"use client"',
+);
 
 const serverCodeTemplate = prettyProtectedFileContent(`
     import { CatchAllServer } from '@kiwi-app/kiwi-nextjs';
@@ -35,8 +36,8 @@ const routeTemplate = prettyProtectedFileContent(`
 `);
 
 module.exports = {
-    pageTemplate,
-    clientCodeTemplate,
-    serverCodeTemplate,
-    routeTemplate,
+  pageTemplate,
+  clientCodeTemplate,
+  serverCodeTemplate,
+  routeTemplate,
 };

@@ -8,7 +8,7 @@ const { createPropSchema } = require('./schema');
 const SECTION_PATH = `${root}/src/sections`;
 
 function getSections(path, sections) {
-  if (!sections.length) return [];
+  if (!sections?.length) return [];
 
   const services = sections.map((section) => {
     const component = {
