@@ -54,9 +54,9 @@ function createKiwiStructure() {
 }
 
 async function init(args) {
-  customUserSetup();
+  await customUserSetup();
 
-  manifest();
+  await manifest();
   console.log('✔️ Manifest Assembled');
 
   updateTsConfig();
