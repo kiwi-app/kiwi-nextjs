@@ -6,11 +6,11 @@ const { put, load } = require('../infrastructure/file-system');
 jest.mock('fs');
 jest.mock('../infrastructure/file-system');
 jest.mock('../infrastructure/commons', () => ({
-    prettyFileContent: (content) => content,
+    prettyFileContent: (content) => new Promise((resolve) => resolve(content))
 }));
 
 describe('updateTsConfig()', () => {
-    test('should add the path for the modules on the tsconfig', () => {
+    test('should add the path for the modules on the tsconfig', async () => {
         existsSync.mockReturnValue(true);
         load.mockReturnValue({
             compilerOptions: {
@@ -29,13 +29,13 @@ describe('updateTsConfig()', () => {
             },
         };
 
-        updateTsConfig();
+        await updateTsConfig();
 
         expect(load).toHaveBeenCalled();
         expect(put).toHaveBeenCalledWith(JSON.stringify(expectedNewTsConfig), `${root}/tsconfig.json`);
     });
 
-    test('should create a default tsconfig case the file does`t exist', () => {
+    test('should create a default tsconfig case the file does`t exist', async () => {
         existsSync.mockReturnValue(false);
 
         expectedNewTsConfig = {
@@ -46,18 +46,18 @@ describe('updateTsConfig()', () => {
             },
         };
 
-        updateTsConfig();
+        await updateTsConfig();
 
         expect(load).toHaveBeenCalled();
         expect(put).toHaveBeenCalledWith(JSON.stringify(expectedNewTsConfig), `${root}/tsconfig.json`);
     });
 
-    test('should throw an exception case isn`t possible to open the tsconfig file', () => {
+    test('should throw an exception case isn`t possible to open the tsconfig file', async () => {
         existsSync.mockReturnValue(true);
-        load.mockImplementation(() => { throw Error; });
+        load.mockImplementation(() => { throw new Error('load mock implementation error'); });
 
-        expect(() => {
-            updateTsConfig()
-        }).toThrow();
+        await expect(updateTsConfig())
+            .rejects
+            .toThrow();
     });
 });

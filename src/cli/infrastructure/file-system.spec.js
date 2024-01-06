@@ -17,7 +17,7 @@ describe('ls()', () => {
             if (path === 'path/no-empty') {
                 return ['file1.txt', 'file2.txt'];
             }
-            throw 'path/exception';
+            throw new Error('path/exception');
         });
     })
 
@@ -53,7 +53,7 @@ describe('put()', () => {
                 return;
             }
 
-            throw 'path/exception';
+            throw new Error('path/exception');
         });
     });
 

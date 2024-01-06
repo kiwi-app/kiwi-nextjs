@@ -36,19 +36,15 @@ function createSchema(modulePath) {
 function getModuleNameByPath(modulePath) {
     const fileName = fileNameFromPath(modulePath);
     if (typeof fileName !== 'string') {
-        throw 'you must provide the module path with a valid .tsx or .ts module file';
+        throw new Error('you must provide the module path with a valid .tsx or .ts module file');
     }
 
     return fileName;
 }
 
-function getInterfaceNameByModuleName(schema, moduleName, sulfix) {
+function getInterfaceNameByModuleName(moduleName, sulfix) {
     const moduleCase = getKiwiConfig('moduleFileNameCase');
     const interfaceName = anycaseToTitle(moduleCase, moduleName) + sulfix;
-
-    if (!Object.hasOwn(schema.definitions, interfaceName)) {
-        return null;
-    }
 
     return interfaceName;
 }
@@ -185,7 +181,7 @@ function buildLoader(schema) {
         const loaderPropsParamInterfaceName = loaderParamsInterface.properties.props.$ref;
         const loaderPropsParamInterface = getInterfaceByRef(schema, loaderPropsParamInterfaceName);
         if (loaderPropsParamInterface === null) {
-            throw 'LoderParams (props) must have a interface declared in the schema';
+            throw new Error('LoderParams (props) must have a interface declared in the schema');
         }
 
         const loader = assembleSchema(schema, loaderPropsParamInterface);
@@ -197,15 +193,18 @@ function buildLoader(schema) {
 
 function createPropSchema(modulePath) {
     if (typeof modulePath !== 'string') {
-        throw 'you must provide a valid module path';
+        throw new Error('you must provide a valid module path');
     }
 
     const moduleName = getModuleNameByPath(modulePath);
     const schema = createSchema(modulePath);
+    const componentInterfaceName = getInterfaceNameByModuleName(moduleName, 'Props');
 
-    const componentInterfaceName = getInterfaceNameByModuleName(schema, moduleName, 'Props');
+    if (!Object.hasOwn(schema.definitions, componentInterfaceName)) {
+        throw new Error(`${moduleName}.tsx module needs to define ${componentInterfaceName} interface`);
+    }
+
     const componentRootSchema = schema.definitions[componentInterfaceName];
-
     const component = assembleSchema(schema, componentRootSchema);
     const loader = buildLoader(schema);
 

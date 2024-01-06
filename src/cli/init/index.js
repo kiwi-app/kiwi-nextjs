@@ -12,38 +12,38 @@ const updateTsConfig = require('./update-ts-config');
 const SERVER_COMPONENT_PATH = `${appRoot}/(kiwi)/[...kiwi]`;
 const API_PATH = `${appRoot}/(kiwi)/api/kiwi/[...kiwi]`;
 
-function createKiwiDirectory() {
+async function createKiwiDirectory() {
   mkdirSync(SERVER_COMPONENT_PATH, { recursive: true });
   mkdirSync(API_PATH, { recursive: true });
 };
 
-function createApiStructure() {
+async function createApiStructure() {
   const structure = {
     path: API_PATH,
     files: {
-      'route.ts': templates.routeTemplate,
+      'route.ts': await templates.routeTemplate,
     }
   };
 
   return structure;
 }
 
-function createPageStructure() {
+async function createPageStructure() {
   const structure = {
     path: SERVER_COMPONENT_PATH,
     files: {
-      'page.tsx': templates.pageTemplate,
-      'client.tsx': templates.clientCodeTemplate,
-      'server.tsx': templates.serverCodeTemplate,
+      'page.tsx': await templates.pageTemplate,
+      'client.tsx': await templates.clientCodeTemplate,
+      'server.tsx': await templates.serverCodeTemplate,
     }
   };
 
   return structure;
 }
 
-function createKiwiStructure() {
-  const apiStructure = createApiStructure();
-  const pageStructure = createPageStructure();
+async function createKiwiStructure() {
+  const apiStructure = await createApiStructure();
+  const pageStructure = await createPageStructure();
 
   const kiwiStructureTemplate = [
     apiStructure,
@@ -59,13 +59,13 @@ async function init(args) {
   await manifest();
   console.log('✔️ Manifest Assembled');
 
-  updateTsConfig();
+  await updateTsConfig();
   console.log('✔️ Manifest alias');
 
-  createKiwiDirectory();
+  await createKiwiDirectory();
   console.log('✔️ Kiwi directories');
 
-  createKiwiStructure();
+  await createKiwiStructure();
   console.log('✔️ Kiwi structure');
 }
 

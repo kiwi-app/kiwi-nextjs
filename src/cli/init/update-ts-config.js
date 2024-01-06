@@ -9,7 +9,7 @@ function loadTsConfig(tsConfigPath) {
             const tsConfig = load(tsConfigPath);
             return tsConfig;
         } catch (e) {
-            throw 'It was not possible to open the tsconfig.json file.';
+            throw new Error('It was not possible to open the tsconfig.json file.');
         }
     }
 
@@ -18,7 +18,7 @@ function loadTsConfig(tsConfigPath) {
     return tsConfig;
 }
 
-function updateTsConfig() {
+async function updateTsConfig() {
     const tsConfigPath = `${root}/tsconfig.json`;
     const tsConfig = loadTsConfig(tsConfigPath);
 
@@ -34,7 +34,7 @@ function updateTsConfig() {
         }
     }
 
-    const formattedTsConfig = prettyFileContent(JSON.stringify(updatedTsConfig));
+    const formattedTsConfig = await prettyFileContent(JSON.stringify(updatedTsConfig), 'json');
     put(formattedTsConfig, tsConfigPath);
 };
 

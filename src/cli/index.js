@@ -12,7 +12,11 @@ const actions = {
 
 async function executeCli() {
   if (Object.hasOwn(actions, action)) {
-    await actions[action](args);
+    try {
+      await actions[action](args);
+    } catch (e) {
+      console.log(`\n\n✖️ ${e}\n\n`);
+    }
   }
   else {
     const strActions = Object.keys(actions).join('|');
