@@ -142,10 +142,6 @@ export const mergeManifest = (manifest: any): Manifest => {
       ...manifest.sections,
       ...internalManifest.sections,
     },
-    loaders: {
-      ...manifest.loaders,
-      ...internalManifest.loaders,
-    },
   };
 };
 
