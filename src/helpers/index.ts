@@ -1,11 +1,4 @@
-import {
-  Manifest,
-  LiveEditorMessage,
-  Page,
-  ExportedModule,
-  LoaderRequest,
-  Section,
-} from '../types';
+import { Manifest, LiveEditorMessage, Page, ExportedModule, LoaderRequest } from '../types';
 import internalManifest from '../../manifest';
 
 const {
@@ -148,10 +141,6 @@ export const mergeManifest = (manifest: any): Manifest => {
     sections: {
       ...manifest.sections,
       ...internalManifest.sections,
-    },
-    loaders: {
-      ...manifest.loaders,
-      ...internalManifest.loaders,
     },
   };
 };

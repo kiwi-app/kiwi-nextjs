@@ -39,8 +39,18 @@ export default [
             src: ['src/cli/infrastructure/*.js', '!**/*.spec.js'],
             dest: 'build/cli/infrastructure',
           },
-          { src: ['src/cli/manifest/*.js', '!**/*.spec.js'], dest: 'build/cli/manifest' },
-          { src: ['src/cli/*.js'], dest: 'build/cli' },
+          {
+            src: ['src/cli/manifest/*.js', '!**/*.spec.js'],
+            dest: 'build/cli/manifest'
+          },
+          {
+            src: ['src/cli/init/*.js', '!**/*.spec.js'],
+            dest: 'build/cli/init'
+          },
+          {
+            src: ['src/cli/*.js'],
+            dest: 'build/cli'
+          },
         ],
       }),
     ],

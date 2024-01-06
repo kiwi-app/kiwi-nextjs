@@ -8,7 +8,7 @@ const { createPropSchema } = require('./schema');
 const SECTION_PATH = `${root}/src/sections`;
 
 function getSections(path, sections) {
-  if (!sections.length) return [];
+  if (!sections?.length) return [];
 
   const services = sections.map((section) => {
     const component = {
@@ -59,8 +59,8 @@ async function manifest(args) {
 
   const formattedOutput = await prettyProtectedFileContent(output);
 
-  console.log('Writing manifest...');
   writeFileSync(`${root}/manifest.ts`, formattedOutput, { encoding: 'utf-8' });
+  console.log('✔️  Manifest assembled');
 }
 
 module.exports = manifest;

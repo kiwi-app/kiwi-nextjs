@@ -3,8 +3,7 @@
 
 const manifest = {
   sections: {},
-  loaders: {},
-  baseUrl: import.meta.url,
+  site: "@kiwi-app/kiwi-nextjs",
 };
 
 export default manifest;
