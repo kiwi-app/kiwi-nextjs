@@ -61,6 +61,10 @@ async function manifest(args) {
 
   console.log('Writing manifest...');
   writeFileSync(`${root}/manifest.ts`, formattedOutput, { encoding: 'utf-8' });
+<<<<<<< Updated upstream
+=======
+  console.log('✔  Manifest assembled');
+>>>>>>> Stashed changes
 }
 
 module.exports = manifest;

@@ -2,8 +2,8 @@
 
 This project contains a CLI with two actions:
 
-- `kiwi init`: configures folders and behaviors to integrate with admin app
-- `kiwi manifest`: generates a manifest file which contains all sections and loaders created locally in your project which will be displayed through the "CatchAll" component and used by **kiwi admin** to display your sections and loaders with their props.
+- `npx kiwi init`: configures folders and behaviors to integrate with admin app
+- `npx kiwi manifest`: generates a manifest file which contains all sections and loaders created locally in your project which will be displayed through the "CatchAll" component and used by **[kiwi admin](https://github.com/kiwi-app/kiwi-admin)** to display your sections and loaders with their props.
 
 ## [Demo](https://github.com/kiwi-app/kiwi-template)
 
@@ -14,11 +14,11 @@ You should configure this lib by creating the following env vars:
 - KIWI_ADMIN_URL
 - KIWI_API_KEY
 
-If you want to remove or change cache time, you can set `KIWI_CACHE_TTL` env var (seconds)
+If you want to remove or change cache time, you can set `KIWI_CACHE_TTL` (in seconds) env var
 
 ## Sections
 
-Kiwi admin uses your manifest sections (sections folder) to build pages.
+Kiwi uses your manifest sections (sections folder) to build the pages.
 
 #### generated manifest example
 
@@ -51,7 +51,7 @@ const manifest = {
 
 When we run `npx kiwi manifest` our manifest is generated using this pattern, we have the exported module which contains a "default" exported (the component properly) and a loader (optional, we will write about it forward).
 
-Note that we have primitive types and also "custom types" such as RichText, it means that we have some special behaviors in **kiwi app** when you using this type. We also have descriptions!
+Note that we have primitive types and also "custom types" such as RichText, it means that we have some special behaviors in **kiwi** when you using this type. We also have descriptions!
 
 ![Alt text](docs/section_with_rich_text.png)
 
@@ -73,22 +73,25 @@ export default function Banner(props: BannerProps) {
 }
 ```
 
-> **IMPORTANT**: You should export your props interface!
+> **IMPORTANT**: Your props interface should be composed by the component name + "Props" (BannerProps)
+
+> **also IMPORTANT**: You should export your props interface!
 
 ## LoaderRequest
 
 Loader request brings to your loader:
 
 - search params used while accessing the page (/home?say=hello)
-- url params (generic type, you will see a sample forward)
-- haders
+- url params (generic type, you will see forward)
+- headers
 - cookies
 
 ## Loaders
 
 ```ts
 // Component
-interface ProductsLoader {
+// interface used only for locally type the "loader" response
+interface ProductsLoaderResponse {
   amount: number;
   products: {
     id: number;
@@ -99,8 +102,8 @@ interface ProductsLoader {
 }
 
 export interface ProductsProps {
-  loader: ProductsLoader;
-  title: string;
+  loader: ProductsLoaderResponse; // prop fulfilled by the loader
+  title: string; // static prop
 }
 
 export default function Products(props: ProductsProps) {
@@ -108,6 +111,7 @@ export default function Products(props: ProductsProps) {
 }
 
 // Loader
+// this interface types the props that will be shown in admin
 export interface ProductsLoaderProps {
   category: string;
 }
@@ -115,7 +119,7 @@ export interface ProductsLoaderProps {
 export async function Loader(
   req: LoaderRequest,
   props: ProductsLoaderProps,
-): Promise<ProductsLoader> {
+): Promise<ProductsLoaderResponse> {
   const request = await fetch(`https://dummyjson.com/products/categories/${props.category}`);
   const { products, total } = await request.json();
 
