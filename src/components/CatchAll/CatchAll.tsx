@@ -28,7 +28,6 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
     });
 
     const page = await getPageConfig(manifest.site, path);
-    console.log('\n', page);
     if (!page) return null;
 
     if (page.path.includes(':')) {

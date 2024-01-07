@@ -94,8 +94,8 @@ export default (externalManifest: any) =>
     return (
       <div className="flex flex-col items-center justify-center">
         <div className="flex flex-col w-full">
-          {page?.sections?.map((section, idx) => {
-            const id = `${section.type}-${idx}`;
+          {page?.sections?.map((section) => {
+            const id = section.id;
             const module = manifest.sections[section.type].module;
 
             // @ts-ignore
