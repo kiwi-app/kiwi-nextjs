@@ -19,7 +19,7 @@ export default function CatchAllServer({ page, manifest, children }: CatchAllSer
           const SuspenseFallback = module.Loading ? <module.Loading /> : '';
 
           const Component = children.get(section.id);
-          if (Component) return null;
+          if (!Component) return null;
           return (
             <section key={id} id={id}>
               <Suspense fallback={SuspenseFallback}>{Component}</Suspense>

@@ -28,6 +28,7 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
     });
 
     const page = await getPageConfig(manifest.site, path);
+    console.log('\n', page);
     if (!page) return null;
 
     if (page.path.includes(':')) {
@@ -48,7 +49,7 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
     const children: Map<string, JSX.Element> = new Map();
     for (let idx = 0; idx < page.sections?.length; idx++) {
       const section = page.sections[idx];
-      const sectionModule = manifest.sections[section.type];
+      const sectionModule = mergedManifest.sections[section.type];
 
       if (!sectionModule) continue;
 
@@ -56,7 +57,7 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
         section.id,
         <SuspenseSection
           isLive={isLive}
-          manifest={manifest}
+          manifest={mergedManifest}
           request={requestInfo}
           section={section as Section}
           sectionModule={sectionModule}

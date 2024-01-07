@@ -170,7 +170,7 @@ export function Loading() {
 <br />
 <br />
 
-![section with loader](docs/section_with_loader.png)
+![Alt text](docs/section_with_loader.png)
 
 > **IMPORTANT**: The exported loader function **MUST** be called "Loader", your "receiver" prop **MUST** be called "loader" and your loading placeholder **MUST** be called "Loading". So that kiwi can handle without side effects.
 
