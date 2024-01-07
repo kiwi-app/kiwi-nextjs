@@ -10,32 +10,33 @@ jest.mock('../infrastructure/file-system');
 jest.mock('ts-json-schema-generator');
 
 const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
+jest.spyOn(console, 'log').mockImplementation(() => {});
 
 describe('manifest()', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-    test('should generate the manifest with a simple section', async () => {
-        fileSystem.ls.mockReturnValue(['header.tsx']);
-        fileSystem.fileNameFromPath.mockReturnValue('header');
-        fileSystem.kebabToTitle.mockReturnValue('Header');
+  test('should generate the manifest with a simple section', async () => {
+    fileSystem.ls.mockReturnValue(['header.tsx']);
+    fileSystem.fileNameFromPath.mockReturnValue('header');
+    fileSystem.anycaseToTitle.mockReturnValue('Header');
 
-        tsj.createGenerator.mockImplementationOnce(() => ({
-            createSchema: () => ({
-                '$schema': 'http://json-schema.org/draft-07/schema#',
-                definitions: {
-                    HeaderProps: {
-                        type: 'object',
-                        properties: { title: { type: 'string' }, lead: { type: 'string' } },
-                        required: ['title', 'lead'],
-                        additionalProperties: false
-                    },
-                }
-            })
-        }));
+    tsj.createGenerator.mockImplementationOnce(() => ({
+      createSchema: () => ({
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        definitions: {
+          HeaderProps: {
+            type: 'object',
+            properties: { title: { type: 'string' }, lead: { type: 'string' } },
+            required: ['title', 'lead'],
+            additionalProperties: false,
+          },
+        },
+      }),
+    }));
 
-        const expectedOutput = `
+    const expectedOutput = `
             import * as $0 from "@/sections/header";
             
             const manifest = {
@@ -59,55 +60,53 @@ describe('manifest()', () => {
             
             export default manifest;`;
 
-        const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
-        await manifest();
+    const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
+    await manifest();
 
-        expect(writeFileSyncSpy).toHaveBeenCalledWith(
-            `${root}/manifest.ts`,
-            formattedExpectedOutput,
-            { encoding: 'utf-8' },
-        )
+    expect(writeFileSyncSpy).toHaveBeenCalledWith(`${root}/manifest.ts`, formattedExpectedOutput, {
+      encoding: 'utf-8',
     });
+  });
 
-    test('should include the loader in the manifest', async () => {
-        fileSystem.ls.mockReturnValue(['products.tsx']);
-        fileSystem.fileNameFromPath.mockReturnValue('products');
-        fileSystem.kebabToTitle.mockReturnValue('Products');
+  test('should include the loader in the manifest', async () => {
+    fileSystem.ls.mockReturnValue(['products.tsx']);
+    fileSystem.fileNameFromPath.mockReturnValue('products');
+    fileSystem.anycaseToTitle.mockReturnValue('Products');
 
-        tsj.createGenerator.mockImplementationOnce(() => ({
-            createSchema: () => ({
-                '$schema': 'http://json-schema.org/draft-07/schema#',
-                definitions: {
-                    ProductsProps: {
-                        type: 'object',
-                        properties: {
-                            loader: { '$ref': '#/definitions/ProductsLoader' },
-                            title: { type: 'string' },
-                            lead: { type: 'string' }
-                        },
-                        required: ['loader', 'title', 'lead'],
-                        additionalProperties: false
-                    },
-                    ProductsLoaderProps: {
-                        type: 'object',
-                        properties: { category: { type: 'string' } },
-                        required: ['category'],
-                        additionalProperties: false
-                    },
-                    'NamedParameters<typeof Loader>': {
-                        type: 'object',
-                        properties: {
-                            req: { '$ref': '#/definitions/LoaderRequest' },
-                            props: { '$ref': '#/definitions/ProductsLoaderProps' }
-                        },
-                        required: ['req', 'props'],
-                        additionalProperties: false
-                    },
-                }
-            })
-        }));
+    tsj.createGenerator.mockImplementationOnce(() => ({
+      createSchema: () => ({
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        definitions: {
+          ProductsProps: {
+            type: 'object',
+            properties: {
+              loader: { $ref: '#/definitions/ProductsLoader' },
+              title: { type: 'string' },
+              lead: { type: 'string' },
+            },
+            required: ['loader', 'title', 'lead'],
+            additionalProperties: false,
+          },
+          ProductsLoaderProps: {
+            type: 'object',
+            properties: { category: { type: 'string' } },
+            required: ['category'],
+            additionalProperties: false,
+          },
+          'NamedParameters<typeof Loader>': {
+            type: 'object',
+            properties: {
+              req: { $ref: '#/definitions/LoaderRequest' },
+              props: { $ref: '#/definitions/ProductsLoaderProps' },
+            },
+            required: ['req', 'props'],
+            additionalProperties: false,
+          },
+        },
+      }),
+    }));
 
-        const expectedOutput = `
+    const expectedOutput = `
             import * as $0 from "@/sections/products";
                 
             const manifest = {
@@ -138,48 +137,46 @@ describe('manifest()', () => {
             
             export default manifest;`;
 
-        const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
-        await manifest();
+    const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
+    await manifest();
 
-        expect(writeFileSyncSpy).toHaveBeenCalledWith(
-            `${root}/manifest.ts`,
-            formattedExpectedOutput,
-            { encoding: 'utf-8' },
-        )
+    expect(writeFileSyncSpy).toHaveBeenCalledWith(`${root}/manifest.ts`, formattedExpectedOutput, {
+      encoding: 'utf-8',
     });
+  });
 
-    test('should include the generic loader in the manifest', async () => {
-        fileSystem.ls.mockReturnValue(['products.tsx']);
-        fileSystem.fileNameFromPath.mockReturnValue('products');
-        fileSystem.kebabToTitle.mockReturnValue('Products');
+  test('should include the generic loader in the manifest', async () => {
+    fileSystem.ls.mockReturnValue(['products.tsx']);
+    fileSystem.fileNameFromPath.mockReturnValue('products');
+    fileSystem.anycaseToTitle.mockReturnValue('Products');
 
-        tsj.createGenerator.mockImplementationOnce(() => ({
-            createSchema: () => ({
-                '$schema': 'http://json-schema.org/draft-07/schema#',
-                definitions: {
-                    ProductsProps: {
-                        type: 'object',
-                        properties: {
-                            loader: { '$ref': '#/definitions/ProductsLoader' },
-                            title: { type: 'string' },
-                            lead: { type: 'string' }
-                        },
-                        required: ['loader', 'title', 'lead'],
-                        additionalProperties: false
-                    },
-                    'NamedParameters<typeof Loader>': {
-                        type: 'object',
-                        properties: {
-                            req: { '$ref': '#/definitions/LoaderRequest' },
-                        },
-                        required: ['req', 'props'],
-                        additionalProperties: false
-                    },
-                }
-            })
-        }));
+    tsj.createGenerator.mockImplementationOnce(() => ({
+      createSchema: () => ({
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        definitions: {
+          ProductsProps: {
+            type: 'object',
+            properties: {
+              loader: { $ref: '#/definitions/ProductsLoader' },
+              title: { type: 'string' },
+              lead: { type: 'string' },
+            },
+            required: ['loader', 'title', 'lead'],
+            additionalProperties: false,
+          },
+          'NamedParameters<typeof Loader>': {
+            type: 'object',
+            properties: {
+              req: { $ref: '#/definitions/LoaderRequest' },
+            },
+            required: ['req', 'props'],
+            additionalProperties: false,
+          },
+        },
+      }),
+    }));
 
-        const expectedOutput = `
+    const expectedOutput = `
             import * as $0 from "@/sections/products";
                 
             const manifest = {
@@ -204,54 +201,52 @@ describe('manifest()', () => {
             
             export default manifest;`;
 
-        const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
-        await manifest();
+    const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
+    await manifest();
 
-        expect(writeFileSyncSpy).toHaveBeenCalledWith(
-            `${root}/manifest.ts`,
-            formattedExpectedOutput,
-            { encoding: 'utf-8' },
-        )
+    expect(writeFileSyncSpy).toHaveBeenCalledWith(`${root}/manifest.ts`, formattedExpectedOutput, {
+      encoding: 'utf-8',
     });
+  });
 
-    test('should include the nested complex interface', async () => {
-        fileSystem.ls.mockReturnValue(['header.tsx']);
-        fileSystem.fileNameFromPath.mockReturnValue('header');
-        fileSystem.kebabToTitle.mockReturnValue('Header');
+  test('should include the nested complex interface', async () => {
+    fileSystem.ls.mockReturnValue(['header.tsx']);
+    fileSystem.fileNameFromPath.mockReturnValue('header');
+    fileSystem.anycaseToTitle.mockReturnValue('Header');
 
-        tsj.createGenerator.mockImplementationOnce(() => ({
-            createSchema: () => ({
-                '$schema': 'http://json-schema.org/draft-07/schema#',
-                definitions: {
-                    Cta: {
-                        type: 'object',
-                        properties: { label: { type: 'string' }, action: { type: 'string' } },
-                        required: ['label', 'action'],
-                        additionalProperties: false
-                    },
-                    HeaderProps: {
-                        type: 'object',
-                        properties: {
-                            title: { type: 'string' },
-                            lead: { type: 'string' },
-                            c2a: { '$ref': '#/definitions/Cta' },
-                            banner: {
-                                type: "object",
-                                properties: {
-                                    image: { type: 'string' },
-                                },
-                                required: ["image"],
-                                additionalProperties: false
-                            }
-                        },
-                        required: ['title', 'lead', 'c2a', 'banner'],
-                        additionalProperties: false
-                    },
-                }
-            })
-        }));
+    tsj.createGenerator.mockImplementationOnce(() => ({
+      createSchema: () => ({
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        definitions: {
+          Cta: {
+            type: 'object',
+            properties: { label: { type: 'string' }, action: { type: 'string' } },
+            required: ['label', 'action'],
+            additionalProperties: false,
+          },
+          HeaderProps: {
+            type: 'object',
+            properties: {
+              title: { type: 'string' },
+              lead: { type: 'string' },
+              c2a: { $ref: '#/definitions/Cta' },
+              banner: {
+                type: 'object',
+                properties: {
+                  image: { type: 'string' },
+                },
+                required: ['image'],
+                additionalProperties: false,
+              },
+            },
+            required: ['title', 'lead', 'c2a', 'banner'],
+            additionalProperties: false,
+          },
+        },
+      }),
+    }));
 
-        const expectedOutput = `
+    const expectedOutput = `
             import * as $0 from "@/sections/header";
                 
             const manifest = {
@@ -290,60 +285,54 @@ describe('manifest()', () => {
             
             export default manifest;`;
 
-        const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
-        await manifest();
+    const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
+    await manifest();
 
-        expect(writeFileSyncSpy).toHaveBeenCalledWith(
-            `${root}/manifest.ts`,
-            formattedExpectedOutput,
-            { encoding: 'utf-8' },
-        )
+    expect(writeFileSyncSpy).toHaveBeenCalledWith(`${root}/manifest.ts`, formattedExpectedOutput, {
+      encoding: 'utf-8',
+    });
+  });
+
+  test('should generate the manifest with multiple sections', async () => {
+    fileSystem.ls.mockReturnValue(['header.tsx', 'content.tsx']);
+    fileSystem.fileNameFromPath.mockImplementation((path) => {
+      return path.indexOf('header') !== -1 ? 'header' : 'content';
+    });
+    fileSystem.anycaseToTitle.mockImplementation((originCase, str) => {
+      return str.indexOf('header') !== -1 ? 'Header' : 'Content';
     });
 
-    test('should generate the manifest with multiple sections', async () => {
-        fileSystem.ls.mockReturnValue(['header.tsx', 'content.tsx']);
-        fileSystem.fileNameFromPath.mockImplementation((param) => {
-            return param.indexOf('header') !== -1
-                ? 'header'
-                : 'content';
-        });
-        fileSystem.kebabToTitle.mockImplementation((param) => {
-            return param.indexOf('header') !== -1
-                ? 'Header'
-                : 'Content';
-        });
+    tsj.createGenerator.mockImplementation((config) => ({
+      createSchema: () => {
+        if (config.path.indexOf('header') !== -1) {
+          return {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            definitions: {
+              HeaderProps: {
+                type: 'object',
+                properties: { title: { type: 'string' }, lead: { type: 'string' } },
+                required: ['title', 'lead'],
+                additionalProperties: false,
+              },
+            },
+          };
+        }
 
-        tsj.createGenerator.mockImplementation((config) => ({
-            createSchema: () => {
-                if (config.path.indexOf('header') !== -1) {
-                    return {
-                        '$schema': 'http://json-schema.org/draft-07/schema#',
-                        definitions: {
-                            HeaderProps: {
-                                type: 'object',
-                                properties: { title: { type: 'string' }, lead: { type: 'string' } },
-                                required: ['title', 'lead'],
-                                additionalProperties: false
-                            },
-                        }
-                    };
-                }
+        return {
+          $schema: 'http://json-schema.org/draft-07/schema#',
+          definitions: {
+            ContentProps: {
+              type: 'object',
+              properties: { body: { type: 'string' } },
+              required: ['body'],
+              additionalProperties: false,
+            },
+          },
+        };
+      },
+    }));
 
-                return {
-                    '$schema': 'http://json-schema.org/draft-07/schema#',
-                    definitions: {
-                        ContentProps: {
-                            type: 'object',
-                            properties: { body: { type: 'string' } },
-                            required: ['body'],
-                            additionalProperties: false
-                        },
-                    }
-                };
-            }
-        }));
-
-        const expectedOutput = `
+    const expectedOutput = `
             import * as $0 from "@/sections/header";
             import * as $1 from "@/sections/content";
             
@@ -378,20 +367,18 @@ describe('manifest()', () => {
             
             export default manifest;`;
 
-        const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
-        await manifest();
+    const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
+    await manifest();
 
-        expect(writeFileSyncSpy).toHaveBeenCalledWith(
-            `${root}/manifest.ts`,
-            formattedExpectedOutput,
-            { encoding: 'utf-8' },
-        )
+    expect(writeFileSyncSpy).toHaveBeenCalledWith(`${root}/manifest.ts`, formattedExpectedOutput, {
+      encoding: 'utf-8',
     });
+  });
 
-    test('should generate a manifest without sections', async () => {
-        fileSystem.ls.mockReturnValue([]);
+  test('should generate a manifest without sections', async () => {
+    fileSystem.ls.mockReturnValue([]);
 
-        const expectedOutput = `
+    const expectedOutput = `
 
             const manifest = {
                 sections: {},
@@ -400,13 +387,11 @@ describe('manifest()', () => {
             
             export default manifest;`;
 
-        const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
-        await manifest();
+    const formattedExpectedOutput = await prettyProtectedFileContent(expectedOutput);
+    await manifest();
 
-        expect(writeFileSyncSpy).toHaveBeenCalledWith(
-            `${root}/manifest.ts`,
-            formattedExpectedOutput,
-            { encoding: 'utf-8' },
-        )
+    expect(writeFileSyncSpy).toHaveBeenCalledWith(`${root}/manifest.ts`, formattedExpectedOutput, {
+      encoding: 'utf-8',
     });
+  });
 });
