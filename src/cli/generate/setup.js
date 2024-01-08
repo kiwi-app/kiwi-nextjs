@@ -18,7 +18,7 @@ async function getSectionType(sectionName) {
   const section = await prompt({
     type: 'select',
     name: 'type',
-    message: `What kind of section ${sectionName} will be?`,
+    message: `What kind of section "${sectionName}" will be?`,
     choices: [
       { title: 'Simple', value: 'simple' },
       { title: 'Loader', value: 'loader' },

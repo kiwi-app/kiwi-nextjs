@@ -2,6 +2,7 @@ const root = require('path').resolve();
 const { put } = require('./file-system');
 const prettier = require('prettier');
 const packageJson = require(`${root}/package.json`);
+const kiwiPackageJson = require('../../../package.json');
 
 async function prettyFileContent(content, parser = 'babel-ts') {
   const formattedOutput = await prettier.format(content, { parser });
@@ -48,5 +49,5 @@ module.exports = {
   prettyProtectedFileContent,
   setPackageJsonProp,
   deployStructure,
-  packageName: packageJson.name,
+  packageName: kiwiPackageJson.name,
 };

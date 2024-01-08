@@ -2,8 +2,10 @@ const { prettyFileContent, packageName } = require('../infrastructure/commons');
 
 const simpleSection = ({ module }) =>
   prettyFileContent(`
+    import { RichText, RichTextComponent } from '${packageName}';
+
     export interface ${module}Props {
-        title: string,
+        title: RichText;
     }
 
     const ${module} = ({ title }: ${module}Props) => (
@@ -13,7 +15,12 @@ const simpleSection = ({ module }) =>
                 <small>Use KiwiAdmin to change 'title' value.</small>
             </h1>
 
-            {title && <i>Current title value: "{title}"</i>}
+            {title && (
+                <>
+                  <i>Current title value:</i>
+                  <RichTextComponent text={title} />
+                </>
+            )}
 
             <p>
                 You should edit this component but keep the base structure.<br /><br />
@@ -21,7 +28,7 @@ const simpleSection = ({ module }) =>
                 <ul>
                     <li>export interface ${module}Props;</li>
                     <li>export default ${module};</li>
-                    <li>${module} props implements ${module}Props;</li>
+                    <li>${module} receive ${module}Props;</li>
                 </ul>
             </p>
         </div>
@@ -32,35 +39,82 @@ const simpleSection = ({ module }) =>
 
 const loaderSection = ({ module }) =>
   prettyFileContent(`
-    import { LoaderRequest } from "${packageName}";
+    import { RichText, RichTextComponent, LoaderRequest } from '${packageName}';
 
     // Component
-    export interface ${module}Props {}
+    interface ${module}Loader {
+        topSecretImages: string[]
+    }
+    
+    export interface ${module}Props {
+        title: RichText;
+        loader: ${module}Loader;
+    }
 
-    const ${module} = (props: ${module}Props) => (
+    const ${module} = ({ title, loader }: ${module}Props) => (
         <div>
-            <p>
-                You should edit this component but keep the base structure.<br /><br />
-                This file <b>MUST</b>:
+            <h1>
+                This is the section ${module}! <br />
+                <small>Use KiwiAdmin to change 'title' value.</small>
+            </h1>
+
+            <br />
+            <br />
+            <h3>Current title value:</h3>
+            {title && (
+                <RichTextComponent text={title} />
+            )}
+
+            <br />
+            <br />
+            <h3>Top secret images from loader</h3>
+            {loader && 
+                <div style={{ display: 'flex', flexWrap: 'wrap'  }}>
+                    {loader.topSecretImages.map(topSecretImage => <img key={topSecretImage} src={topSecretImage} />)}
+                </div>
+            }
+
+            <br />
+            <br />
+            <div>
+                <p>
+                    You should edit this component but keep the base structure.<br /><br />
+                    This file <b>MUST</b>:
+                </p>
                 <ul>
                     <li>export interface ${module}Props;</li>
                     <li>export default ${module};</li>
-                    <li>${module} props implements ${module}Props;</li>
+                    <li>${module} receive ${module}Props;</li>
                     <li>export async function Loader</li>
                     <li>export async function Loading (optional to use Suspense)</li>
                 </ul>
-            </p>
+            </div>
         </div>
     );
 
     // Loader
-    interface ${module}Loader { }
-    export interface ${module}LoaderProps { }
+    export interface ${module}LoaderProps {
+        imageCount: number;
+    }
 
     export async function Loader(req: LoaderRequest, props: ${module}LoaderProps): Promise<${module}Loader> {
-        return new Promise((resolve, reject) => {
-            const data: ${module}Loader = {};
-            resolve(data);
+        const topSecretImages = [];
+
+        for (let i = 0; i < props.imageCount; i++) {
+            try {
+                const response = await fetch('https://source.unsplash.com/random/500x500/?kiwis');
+                topSecretImages.push(response.url);
+            } catch (_) {
+                console.log('Oops!');
+            }
+        }
+
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve({
+                    topSecretImages,
+                });
+            }, 2000);
         });
     }
 

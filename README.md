@@ -4,6 +4,9 @@ This project contains a CLI with two actions:
 
 - `npx kiwi init`: configures folders and behaviors to integrate with admin app
 - `npx kiwi manifest`: generates a manifest file which contains all sections and loaders created locally in your project which will be displayed through the "CatchAll" component and used by **[kiwi admin](https://github.com/kiwi-app/kiwi-admin)** to display your sections and loaders with their props.
+- `npx kiwi generate`: generates a boilerplate with the selected "section type&
+  - _simple_ section that uses "static" props from kiwi admin
+  - _loader_ section that also uses props from kiwi admin but also make external request before render.
 
 ## [Demo](https://github.com/kiwi-app/kiwi-template)
 
