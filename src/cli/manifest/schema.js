@@ -24,7 +24,7 @@ function createSchema(modulePath) {
 
     return schema;
   } catch (e) {
-    console.log(`It wasn't possible to generate the schema: module[${modulePath}].`);
+    console.log(`-  It wasn't possible to generate the schema: module[${modulePath}].`);
   }
 }
 
@@ -38,7 +38,7 @@ function getModuleNameByPath(modulePath) {
 }
 
 function getInterfaceNameByModuleName(moduleName, sulfix) {
-  const moduleCase = getKiwiConfig('moduleFileNameCase');
+  const moduleCase = getKiwiConfig('sectionFileCase');
   const interfaceName = anycaseToTitle(moduleCase, moduleName) + sulfix;
 
   return interfaceName;

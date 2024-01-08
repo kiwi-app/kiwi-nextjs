@@ -56,26 +56,26 @@ const enum_case_destructor = {
 };
 
 function arrToCamelCase(arr) {
-  const words = arr.map((word, i) => (
-    i
-      ? `${word.charAt(0).toUpperCase()}${word.substr(1)}`
-      : word
-  ))
+  const words = arr
+    .map((word, i) => (i ? `${word.charAt(0).toUpperCase()}${word.substr(1)}` : word))
     .join('');
   return words;
 }
 
 function arrToTitleCase(arr) {
-  const words = arr.map((word, i) => (
-    `${word.charAt(0).toUpperCase()}${word.substr(1)}`
-  ))
-    .join('');
+  const words = arr.map((word, i) => `${word.charAt(0).toUpperCase()}${word.substr(1)}`).join('');
   return words;
 }
 
+const cases = {
+  kebab: 'kebab-case',
+  snake: 'snake_case',
+  camel: 'camelCase',
+};
+
 const enum_case_assemble = {
-  kebab: words => words.join('-'),
-  snake: words => words.join('_'),
+  kebab: (words) => words.join('-'),
+  snake: (words) => words.join('_'),
   camel: arrToCamelCase,
   title: arrToTitleCase,
 };
@@ -111,4 +111,5 @@ module.exports = {
   anycaseToTitle,
   anyCaseToAnyCase,
   fileNameFromPath,
+  cases,
 };

@@ -7,28 +7,23 @@ const {
 } = require('./commons');
 const fs = require('./file-system');
 const packageJson = require('../../../package.json');
+const { getConfigFile, defaultConfigFile } = require('./config-file');
 
 jest.mock('./file-system', () => ({
   put: jest.fn(),
 }));
-jest.mock('../../../package.json', () => ({
-  kiwiConfig: {
-    customUserConfig: 'custom',
-  },
-  site: 'test',
-}));
+
+jest.mock('./config-file');
+
+getConfigFile.mockReturnValue(defaultConfigFile);
 
 describe('getKiwiConfig()', () => {
   test('should return a value for a valid config key', () => {
-    expect(typeof getKiwiConfig('moduleFileNameCase')).toBe('string');
+    expect(typeof getKiwiConfig('sectionFileCase')).toBe('string');
   });
 
   test('should return the default value', () => {
-    expect(getKiwiConfig('moduleFileNameCase')).toBe('kebab');
-  });
-
-  test('should return the user custom value', () => {
-    expect(getKiwiConfig('customUserConfig')).toBe('custom');
+    expect(getKiwiConfig('sectionFileCase')).toBe('kebab');
   });
 
   test('should return if key is not a valid config key', () => {

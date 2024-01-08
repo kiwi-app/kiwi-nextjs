@@ -1,51 +1,50 @@
 const { prompt } = require('../infrastructure/prompts');
 const { anyCaseToAnyCase } = require('../infrastructure/file-system');
-const {
-    getKiwiConfig,
-} = require('../infrastructure/commons');
+const { getKiwiConfig } = require('../infrastructure/commons');
 
 async function getSectionName() {
-    const section = await prompt({
-        type: 'text',
-        name: 'name',
-        hing: `words MUST be separated by space`,
-        message: 'What is your section name?',
-    });
+  const section = await prompt({
+    type: 'text',
+    name: 'name',
+    hing: `words MUST be separated by space`,
+    message: 'What is your section name?',
+  });
 
-    const sectionName = section.name.toLowerCase();
-    return sectionName;
+  const sectionName = section.name.toLowerCase();
+  return sectionName;
 }
 
 async function getSectionType(sectionName) {
-    const section = await prompt({
-        type: 'select',
-        name: 'type',
-        message: `What kind of section ${sectionName} will be?`,
-        choices: [
-            { title: 'Simple', value: 'simple' },
-            { title: 'Loader', value: 'loader' },
-        ],
-    });
+  const section = await prompt({
+    type: 'select',
+    name: 'type',
+    message: `What kind of section ${sectionName} will be?`,
+    choices: [
+      { title: 'Simple', value: 'simple' },
+      { title: 'Loader', value: 'loader' },
+    ],
+  });
 
-    const type = section.type.toLowerCase();
-    return type;
+  const type = section.type.toLowerCase();
+  return type;
 }
 
 async function getSectionSetup() {
-    const moduleFileNameCase = getKiwiConfig('moduleFileNameCase');
-    const name = await getSectionName();
-    if (!name) { // TODO - improve this validation
-        throw new Error(`the name ${name} isn't a valid`);
-    }
+  const sectionFileCase = getKiwiConfig('sectionFileCase');
+  const name = await getSectionName();
+  if (!name) {
+    // TODO - improve this validation
+    throw new Error(`the name ${name} isn't a valid`);
+  }
 
-    const formatedName = name.split(' ').join('-');
-    const type = await getSectionType(anyCaseToAnyCase('kebab', 'title', formatedName));
-    const file = anyCaseToAnyCase('kebab', moduleFileNameCase, formatedName) + '.tsx';
-    const module = anyCaseToAnyCase('kebab', 'title', formatedName);
+  const formatedName = name.split(' ').join('-');
+  const type = await getSectionType(anyCaseToAnyCase('kebab', 'title', formatedName));
+  const file = anyCaseToAnyCase('kebab', sectionFileCase, formatedName) + '.tsx';
+  const module = anyCaseToAnyCase('kebab', 'title', formatedName);
 
-    const section = { name, type, file, module };
+  const section = { name, type, file, module };
 
-    return section;
+  return section;
 }
 
 module.exports = getSectionSetup;

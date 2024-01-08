@@ -2,6 +2,7 @@ const customUserSetup = require('./custom-user-setup');
 const { existsSync, unlinkSync } = require('fs');
 const { prompt } = require('../infrastructure/prompts');
 const { setPackageJsonProp } = require('../infrastructure/commons');
+const { defaultConfigFile } = require('../infrastructure/config-file');
 
 jest.mock('fs');
 jest.mock('../infrastructure/prompts');
@@ -23,33 +24,51 @@ describe('customUserSetup()', () => {
     existsSync.mockReturnValue(true);
     prompt.mockImplementation((config) => {
       if (config.name === 'name') {
-        return new Promise((resolve) => resolve({ name: 'my-website' }));
+        return Promise.resolve({ name: 'my-website' });
       }
+
       if (config.name === 'root') {
-        return new Promise((resolve) => resolve({ root: true }));
+        return Promise.resolve({ root: true });
+      }
+
+      if (config.name === 'alias') {
+        return Promise.resolve({ alias: defaultConfigFile.manifestImportAlias });
+      }
+
+      if (config.name === 'type') {
+        return Promise.resolve({ type: defaultConfigFile.sectionFileCase });
       }
     });
 
     const chosenSetup = await customUserSetup();
 
     expect(chosenSetup.name).toBe('my-website');
-    expect(chosenSetup.useKiwiRootPage).toBe(true);
+    expect(chosenSetup.useRootPage).toBe(true);
   });
 
   test('should setup the project with all features on', async () => {
     existsSync.mockReturnValue(true);
     prompt.mockImplementation((config) => {
       if (config.name === 'name') {
-        return new Promise((resolve) => resolve({ name: 'my-website' }));
+        return Promise.resolve({ name: 'my-website' });
       }
+
       if (config.name === 'root') {
-        return new Promise((resolve) => resolve({ root: true }));
+        return Promise.resolve({ root: true });
+      }
+
+      if (config.name === 'alias') {
+        return Promise.resolve({ alias: defaultConfigFile.manifestImportAlias });
+      }
+
+      if (config.name === 'type') {
+        return Promise.resolve({ type: defaultConfigFile.sectionFileCase });
       }
     });
 
     await customUserSetup();
 
-    expect(prompt).toHaveBeenCalledTimes(2);
+    expect(prompt).toHaveBeenCalledTimes(4);
     expect(setPackageJsonProp).toHaveBeenCalledWith('name', 'my-website');
     expect(unlinkSync).toHaveBeenCalled();
   });
@@ -58,16 +77,25 @@ describe('customUserSetup()', () => {
     existsSync.mockReturnValue(true);
     prompt.mockImplementation((config) => {
       if (config.name === 'name') {
-        return new Promise((resolve) => resolve({ name: 'my-website' }));
+        return Promise.resolve({ name: 'my-website' });
       }
+
       if (config.name === 'root') {
-        return new Promise((resolve) => resolve({ root: false }));
+        return Promise.resolve({ root: false });
+      }
+
+      if (config.name === 'alias') {
+        return Promise.resolve({ alias: defaultConfigFile.manifestImportAlias });
+      }
+
+      if (config.name === 'type') {
+        return Promise.resolve({ type: defaultConfigFile.sectionFileCase });
       }
     });
 
     await customUserSetup();
 
-    expect(prompt).toHaveBeenCalledTimes(2);
+    expect(prompt).toHaveBeenCalledTimes(4);
     expect(setPackageJsonProp).toHaveBeenCalledWith('name', 'my-website');
     expect(unlinkSync).not.toHaveBeenCalled();
   });
@@ -76,16 +104,24 @@ describe('customUserSetup()', () => {
     existsSync.mockReturnValue(true);
     prompt.mockImplementation((config) => {
       if (config.name === 'name') {
-        return new Promise((resolve) => resolve({ name: 'mock-package' }));
+        return Promise.resolve({ name: 'mock-package' });
       }
       if (config.name === 'root') {
-        return new Promise((resolve) => resolve({ root: true }));
+        return Promise.resolve({ root: true });
+      }
+
+      if (config.name === 'alias') {
+        return Promise.resolve({ alias: defaultConfigFile.manifestImportAlias });
+      }
+
+      if (config.name === 'type') {
+        return Promise.resolve({ type: defaultConfigFile.sectionFileCase });
       }
     });
 
     await customUserSetup();
 
-    expect(prompt).toHaveBeenCalledTimes(2);
+    expect(prompt).toHaveBeenCalledTimes(4);
     expect(setPackageJsonProp).not.toHaveBeenCalled();
     expect(unlinkSync).toHaveBeenCalled();
   });
@@ -94,16 +130,24 @@ describe('customUserSetup()', () => {
     existsSync.mockReturnValue(true);
     prompt.mockImplementation((config) => {
       if (config.name === 'name') {
-        return new Promise((resolve) => resolve({ name: 'mock-package' }));
+        return Promise.resolve({ name: 'mock-package' });
       }
       if (config.name === 'root') {
-        return new Promise((resolve) => resolve({ root: false }));
+        return Promise.resolve({ root: false });
+      }
+
+      if (config.name === 'alias') {
+        return Promise.resolve({ alias: defaultConfigFile.manifestImportAlias });
+      }
+
+      if (config.name === 'type') {
+        return Promise.resolve({ type: defaultConfigFile.sectionFileCase });
       }
     });
 
     await customUserSetup();
 
-    expect(prompt).toHaveBeenCalledTimes(2);
+    expect(prompt).toHaveBeenCalledTimes(4);
     expect(setPackageJsonProp).not.toHaveBeenCalled();
     expect(unlinkSync).not.toHaveBeenCalled();
   });
@@ -116,18 +160,26 @@ describe('customUserSetup()', () => {
     const log = jest.spyOn(console, 'log');
     prompt.mockImplementation((config) => {
       if (config.name === 'name') {
-        return new Promise((resolve) => resolve({ name: 'my-website' }));
+        return Promise.resolve({ name: 'my-website' });
       }
       if (config.name === 'root') {
-        return new Promise((resolve) => resolve({ root: true }));
+        return Promise.resolve({ root: true });
+      }
+
+      if (config.name === 'alias') {
+        return Promise.resolve({ alias: defaultConfigFile.manifestImportAlias });
+      }
+
+      if (config.name === 'type') {
+        return Promise.resolve({ type: defaultConfigFile.sectionFileCase });
       }
     });
 
     await customUserSetup();
 
-    expect(prompt).toHaveBeenCalledTimes(2);
+    expect(prompt).toHaveBeenCalledTimes(4);
     expect(setPackageJsonProp).toHaveBeenCalled();
     expect(unlinkSync).toHaveBeenCalled();
-    expect(log).toHaveBeenCalledWith('ℹ  It wasn`t possible to remove your index page component');
+    expect(log).toHaveBeenCalledWith('-  It wasn`t possible to remove your index page component');
   });
 });
