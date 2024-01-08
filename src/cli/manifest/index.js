@@ -37,7 +37,6 @@ function getSevices() {
 }
 
 async function manifest(args) {
-  const configFile = getConfigFile();
   const services = getSevices();
 
   const sections = services.sections

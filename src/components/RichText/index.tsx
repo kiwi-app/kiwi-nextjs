@@ -1,5 +1,3 @@
-import React from 'react';
-
 // types
 export interface RichText extends String {}
 
