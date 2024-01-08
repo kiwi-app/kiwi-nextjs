@@ -6,7 +6,7 @@ const deploySection = require('./deploy');
 jest.mock('../infrastructure/commons');
 
 describe('deploySection()', () => {
-    test('should deploy the section correctly when it`s a simple section', () => {
+    test('should deploy the section correctly when it`s a simple section', async () => {
         const setup = {
             name: 'main header',
             type: 'simple',
@@ -17,11 +17,11 @@ describe('deploySection()', () => {
         const expectedStructure = [{
             path: `${root}/src/sections`,
             files: {
-                'main-header.tsx': templates.simpleSection(setup)
+                'main-header.tsx': await templates.simpleSection(setup)
             }
         }];
 
-        deploySection(setup);
+        await deploySection(setup);
 
         expect(deployStructure).toHaveBeenCalledWith(expectedStructure);
     });

@@ -10,11 +10,11 @@ function getTempleateByType(type) {
     return templates.simpleSection;
 }
 
-function getSectionDeployStructure(setup) {
+async function getSectionDeployStructure(setup) {
     const structure = {
         path: `${root}/src/sections`,
         files: {
-            [setup.file]: getTempleateByType(setup.type)(setup)
+            [setup.file]: await getTempleateByType(setup.type)(setup)
         }
     }
 
@@ -22,7 +22,7 @@ function getSectionDeployStructure(setup) {
 };
 
 async function deploySection(setup) {
-    const structure = getSectionDeployStructure(setup);
+    const structure = await getSectionDeployStructure(setup);
     deployStructure([structure]);
 }
 

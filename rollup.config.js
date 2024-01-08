@@ -44,6 +44,10 @@ export default [
             dest: 'build/cli/manifest'
           },
           {
+            src: ['src/cli/generate/*.js', '!**/*.spec.js'],
+            dest: 'build/cli/generate'
+          },
+          {
             src: ['src/cli/init/*.js', '!**/*.spec.js'],
             dest: 'build/cli/init'
           },

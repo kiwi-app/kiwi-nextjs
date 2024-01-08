@@ -5,11 +5,10 @@ const manifest = require('../manifest');
 async function generate(args) {
     const setup = await getSectionSetup();
 
-    deploySection(setup);
-    console.log('✔  Section ${setup.name} generated');
+    await deploySection(setup);
+    console.log(`✔  Section ${setup.module} generated`);
 
     await manifest();
-    console.log('✔  Manifest assembled');
 };
 
 module.exports = generate;

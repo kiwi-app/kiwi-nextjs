@@ -18,12 +18,13 @@ async function getSectionName() {
 
 async function getSectionType(sectionName) {
     const section = await prompt({
-        type: 'toggle',
+        type: 'select',
         name: 'type',
         message: `What kind of section ${sectionName} will be?`,
-        initial: 'Simple',
-        active: 'Simple',
-        inactive: 'Loader',
+        choices: [
+            { title: 'Simple', value: 'simple' },
+            { title: 'Loader', value: 'loader' },
+        ],
     });
 
     const type = section.type.toLowerCase();
@@ -34,11 +35,11 @@ async function getSectionSetup() {
     const moduleFileNameCase = getKiwiConfig('moduleFileNameCase');
     const name = await getSectionName();
     if (!name) { // TODO - improve this validation
-        throw new Error('the name $(name) isn`t a valid');
+        throw new Error(`the name ${name} isn't a valid`);
     }
 
-    const type = await getSectionType(name);
     const formatedName = name.split(' ').join('-');
+    const type = await getSectionType(anyCaseToAnyCase('kebab', 'title', formatedName));
     const file = anyCaseToAnyCase('kebab', moduleFileNameCase, formatedName) + '.tsx';
     const module = anyCaseToAnyCase('kebab', 'title', formatedName);
 
