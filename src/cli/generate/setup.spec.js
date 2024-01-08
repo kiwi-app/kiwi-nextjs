@@ -1,9 +1,9 @@
+const { getKiwiConfig } = require('../infrastructure/config-file');
 const { prompt } = require('../infrastructure/prompts');
-const { getKiwiConfig } = require('../infrastructure/commons');
 const getSectionSetup = require('./setup');
 
 jest.mock('../infrastructure/prompts');
-jest.mock('../infrastructure/commons');
+jest.mock('../infrastructure/config-file');
 
 describe('getSectionSetup()', () => {
   beforeEach(() => {

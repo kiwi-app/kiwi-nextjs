@@ -1,6 +1,6 @@
 const { prompt } = require('../infrastructure/prompts');
 const { anyCaseToAnyCase } = require('../infrastructure/file-system');
-const { getKiwiConfig } = require('../infrastructure/commons');
+const { getKiwiConfig } = require('../infrastructure/config-file');
 
 async function getSectionName() {
   const section = await prompt({

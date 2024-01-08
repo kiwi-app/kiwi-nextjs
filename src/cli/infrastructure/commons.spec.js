@@ -1,35 +1,11 @@
 const root = require('path').resolve();
-const {
-  getKiwiConfig,
-  setPackageJsonProp,
-  prettyFileContent,
-  deployStructure,
-} = require('./commons');
+const { setPackageJsonProp, prettyFileContent, deployStructure } = require('./commons');
 const fs = require('./file-system');
 const packageJson = require('../../../package.json');
-const { getConfigFile, defaultConfigFile } = require('./config-file');
 
 jest.mock('./file-system', () => ({
   put: jest.fn(),
 }));
-
-jest.mock('./config-file');
-
-getConfigFile.mockReturnValue(defaultConfigFile);
-
-describe('getKiwiConfig()', () => {
-  test('should return a value for a valid config key', () => {
-    expect(typeof getKiwiConfig('sectionFileCase')).toBe('string');
-  });
-
-  test('should return the default value', () => {
-    expect(getKiwiConfig('sectionFileCase')).toBe('kebab');
-  });
-
-  test('should return if key is not a valid config key', () => {
-    expect(getKiwiConfig('notValidKey')).toBeNull();
-  });
-});
 
 describe('setPackageJsonProp()', () => {
   beforeAll(() => {

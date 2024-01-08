@@ -1,5 +1,4 @@
 const root = require('path').resolve();
-const { getConfigFile } = require('./config-file');
 const { put } = require('./file-system');
 const prettier = require('prettier');
 const packageJson = require(`${root}/package.json`);
@@ -19,15 +18,6 @@ async function prettyProtectedFileContent(content, directive = '') {
     `;
   const formattedOutput = prettyFileContent(template);
   return formattedOutput;
-}
-
-function getKiwiConfig(key) {
-  const kiwiConfig = getConfigFile();
-
-  if (!Object.hasOwn(kiwiConfig, key)) return null;
-
-  const value = kiwiConfig[key];
-  return value;
 }
 
 async function setPackageJsonProp(prop, value) {
@@ -56,7 +46,6 @@ function deployStructure(structure) {
 module.exports = {
   prettyFileContent,
   prettyProtectedFileContent,
-  getKiwiConfig,
   setPackageJsonProp,
   deployStructure,
   packageName: packageJson.name,

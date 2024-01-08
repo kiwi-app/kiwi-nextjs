@@ -1,9 +1,13 @@
 const { load } = require('./file-system');
-const { getConfigFile, defaultConfigFile } = require('./config-file');
+const { getConfigFile, getKiwiConfig, defaultConfigFile } = require('./config-file');
 
 jest.mock('../infrastructure/file-system');
 
-describe('config file', () => {
+describe('getConfigFile()', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('should return the default config file if kiwi.config.js is not created', async () => {
     load.mockImplementation(() => {
       throw new Error('load mock implementation error');
@@ -28,5 +32,24 @@ describe('config file', () => {
     expect(configFile.manifestImportAlias).toBe('@custom-alias');
     expect(configFile.sectionFileCase).toBe('snake');
     expect(configFile.useRootPage).toBe(false);
+  });
+});
+
+describe('getKiwiConfig()', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    load.mockImplementation(() => defaultConfigFile);
+  });
+
+  test('should return a value for a valid config key', () => {
+    expect(typeof getKiwiConfig('sectionFileCase')).toBe('string');
+  });
+
+  test('should return the default value', () => {
+    expect(getKiwiConfig('sectionFileCase')).toBe('kebab');
+  });
+
+  test('should return if key is not a valid config key', () => {
+    expect(getKiwiConfig('notValidKey')).toBeNull();
   });
 });

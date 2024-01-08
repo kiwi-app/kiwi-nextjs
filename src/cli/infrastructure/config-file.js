@@ -8,6 +8,15 @@ const defaultConfigFile = {
   manifestImportAlias: '@/',
 };
 
+function getKiwiConfig(key) {
+  const kiwiConfig = getConfigFile();
+
+  if (!Object.hasOwn(kiwiConfig, key)) return null;
+
+  const value = kiwiConfig[key];
+  return value;
+}
+
 function getConfigFile() {
   const kiwiConfigPath = `${root}/kiwi.config.js`;
 
@@ -49,5 +58,6 @@ async function createConfigFile(setup) {
 module.exports = {
   getConfigFile,
   createConfigFile,
+  getKiwiConfig,
   defaultConfigFile,
 };

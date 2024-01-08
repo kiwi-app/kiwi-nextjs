@@ -1,6 +1,6 @@
 const tsj = require('ts-json-schema-generator');
 const { fileNameFromPath, anycaseToTitle } = require('../infrastructure/file-system');
-const { getKiwiConfig } = require('../infrastructure/commons');
+const { getKiwiConfig, getConfigFile } = require('../infrastructure/config-file');
 
 const DEFAULT_TYPES = ['RichText'];
 
@@ -39,6 +39,7 @@ function getModuleNameByPath(modulePath) {
 
 function getInterfaceNameByModuleName(moduleName, sulfix) {
   const moduleCase = getKiwiConfig('sectionFileCase');
+
   const interfaceName = anycaseToTitle(moduleCase, moduleName) + sulfix;
 
   return interfaceName;

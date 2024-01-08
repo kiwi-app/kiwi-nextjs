@@ -1,15 +1,15 @@
 const tsj = require('ts-json-schema-generator');
 const { createPropSchema } = require('./schema');
-const { getConfigFile, defaultConfigFile } = require('../infrastructure/config-file');
+const { defaultConfigFile, getKiwiConfig } = require('../infrastructure/config-file');
 
 jest.mock('ts-json-schema-generator');
 jest.mock('../infrastructure/config-file');
 
 describe('createPropSchema()', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
 
-    getConfigFile.mockReturnValue(defaultConfigFile);
+    getKiwiConfig.mockReturnValue(defaultConfigFile.sectionFileCase);
   });
 
   test('should generate a valid component schema without loader', () => {
