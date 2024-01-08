@@ -48,28 +48,59 @@ function camelOrTitleStrToArray(str) {
   return words;
 }
 
-const enum_case = {
+const enum_case_destructor = {
   kebab: kebabStrToArray,
   snake: snakeStrToArray,
   camel: camelOrTitleStrToArray,
   title: camelOrTitleStrToArray,
 };
 
-function anycaseToTitle(caseOrigin, str) {
+function arrToCamelCase(arr) {
+  const words = arr.map((word, i) => (
+    i
+      ? `${word.charAt(0).toUpperCase()}${word.substr(1)}`
+      : word
+  ))
+    .join('');
+  return words;
+}
+
+function arrToTitleCase(arr) {
+  const words = arr.map((word, i) => (
+    `${word.charAt(0).toUpperCase()}${word.substr(1)}`
+  ))
+    .join('');
+  return words;
+}
+
+const enum_case_assemble = {
+  kebab: words => words.join('-'),
+  snake: words => words.join('_'),
+  camel: arrToCamelCase,
+  title: arrToTitleCase,
+};
+
+function anyCaseToAnyCase(caseFrom, caseTo, str) {
   if (typeof str !== 'string') {
     return null;
   }
 
-  if (!Object.hasOwn(enum_case, caseOrigin)) {
+  if (!Object.hasOwn(enum_case_destructor, caseFrom)) {
     return null;
   }
 
-  const words = enum_case[caseOrigin](str);
-  const title = words.reduce((title, word) => {
-    const title_str = word.charAt(0).toUpperCase() + word.substring(1);
-    return `${title}${title_str}`;
-  }, '');
+  if (!Object.hasOwn(enum_case_assemble, caseTo)) {
+    return null;
+  }
 
+  const words = enum_case_destructor[caseFrom](str);
+  const converted = enum_case_assemble[caseTo](words);
+
+  return converted;
+}
+
+function anycaseToTitle(caseOrigin, str) {
+  const title = anyCaseToAnyCase(caseOrigin, 'title', str);
   return title;
 }
 
@@ -78,5 +109,6 @@ module.exports = {
   put,
   load,
   anycaseToTitle,
+  anyCaseToAnyCase,
   fileNameFromPath,
 };
