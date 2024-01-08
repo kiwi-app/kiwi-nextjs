@@ -75,6 +75,8 @@ export default function Banner(props: BannerProps) {
 
 > **IMPORTANT**: Your props interface should be composed by the component name + "Props" (BannerProps)
 
+> **IMPORTANT**: You must export your section component as default!
+
 > **also IMPORTANT**: You should export your props interface!
 
 ## LoaderRequest
@@ -217,5 +219,5 @@ export async function Loader(req: LoaderRequest<ProductParams>): Promise<Product
 For testing and preview purposes, the admin shows an input for each path param and it will be replaced as loader props while "live editing".
 <br />
 <br />
-<br />
+
 ![loader testing props](docs/section_loader_path_params.png)
