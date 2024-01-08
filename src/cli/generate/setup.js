@@ -34,7 +34,7 @@ async function getSectionSetup() {
   const name = await getSectionName();
   if (!name) {
     // TODO - improve this validation
-    throw new Error(`the name ${name} isn't a valid`);
+    throw new Error(`the name "${name}" isn't a valid`);
   }
 
   const formatedName = name.split(' ').join('-');
