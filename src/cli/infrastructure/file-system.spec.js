@@ -2,7 +2,7 @@ const fs = require('fs');
 const {
   ls,
   put,
-  anyCaseToAnycase,
+  anyCaseToAnyCase,
   anycaseToTitle,
   fileNameFromPath,
 } = require('./file-system');
@@ -103,31 +103,31 @@ describe('anycaseToTitle()', () => {
 
 describe('anycaseToAnyCase()', () => {
   test('should return camelCase', () => {
-    expect(anyCaseToAnycase('kebab', 'camel', 'this-is-kebab')).toEqual('thisIsKebab');
-    expect(anyCaseToAnycase('snake', 'camel', 'this_is_snake')).toEqual('thisIsSnake');
-    expect(anyCaseToAnycase('camel', 'camel', 'thisIsCamelCase')).toEqual('thisIsCamelCase');
-    expect(anyCaseToAnycase('title', 'camel', 'ThisIsTitleCase')).toEqual('thisIsTitleCase');
+    expect(anyCaseToAnyCase('kebab', 'camel', 'this-is-kebab')).toEqual('thisIsKebab');
+    expect(anyCaseToAnyCase('snake', 'camel', 'this_is_snake')).toEqual('thisIsSnake');
+    expect(anyCaseToAnyCase('camel', 'camel', 'thisIsCamelCase')).toEqual('thisIsCamelCase');
+    expect(anyCaseToAnyCase('title', 'camel', 'ThisIsTitleCase')).toEqual('thisIsTitleCase');
   });
 
   test('should return kebabCase', () => {
-    expect(anyCaseToAnycase('kebab', 'kebab', 'this-is-kebab')).toEqual('this-is-kebab');
-    expect(anyCaseToAnycase('snake', 'kebab', 'this_is_snake')).toEqual('this-is-snake');
-    expect(anyCaseToAnycase('camel', 'kebab', 'thisIsCamelCase')).toEqual('this-is-camel-case');
-    expect(anyCaseToAnycase('title', 'kebab', 'ThisIsTitleCase')).toEqual('this-is-title-case');
+    expect(anyCaseToAnyCase('kebab', 'kebab', 'this-is-kebab')).toEqual('this-is-kebab');
+    expect(anyCaseToAnyCase('snake', 'kebab', 'this_is_snake')).toEqual('this-is-snake');
+    expect(anyCaseToAnyCase('camel', 'kebab', 'thisIsCamelCase')).toEqual('this-is-camel-case');
+    expect(anyCaseToAnyCase('title', 'kebab', 'ThisIsTitleCase')).toEqual('this-is-title-case');
   });
 
   test('should return snakeCase', () => {
-    expect(anyCaseToAnycase('kebab', 'snake', 'this-is-kebab')).toEqual('this_is_kebab');
-    expect(anyCaseToAnycase('snake', 'snake', 'this_is_snake')).toEqual('this_is_snake');
-    expect(anyCaseToAnycase('camel', 'snake', 'thisIsCamelCase')).toEqual('this_is_camel_case');
-    expect(anyCaseToAnycase('title', 'snake', 'ThisIsTitleCase')).toEqual('this_is_title_case');
+    expect(anyCaseToAnyCase('kebab', 'snake', 'this-is-kebab')).toEqual('this_is_kebab');
+    expect(anyCaseToAnyCase('snake', 'snake', 'this_is_snake')).toEqual('this_is_snake');
+    expect(anyCaseToAnyCase('camel', 'snake', 'thisIsCamelCase')).toEqual('this_is_camel_case');
+    expect(anyCaseToAnyCase('title', 'snake', 'ThisIsTitleCase')).toEqual('this_is_title_case');
   });
 
   test('should return null if parameter is != string or originCase is not valid', () => {
-    expect(anyCaseToAnycase('kebab', 'title', 123)).toBeNull();
-    expect(anyCaseToAnycase('kebab', 'title')).toBeNull();
-    expect(anyCaseToAnycase('kebab', 'title', null)).toBeNull();
-    expect(anyCaseToAnycase('not-valid', 'kebab-case', 'str')).toBeNull();
+    expect(anyCaseToAnyCase('kebab', 'title', 123)).toBeNull();
+    expect(anyCaseToAnyCase('kebab', 'title')).toBeNull();
+    expect(anyCaseToAnyCase('kebab', 'title', null)).toBeNull();
+    expect(anyCaseToAnyCase('not-valid', 'kebab-case', 'str')).toBeNull();
   });
 });
 

@@ -80,7 +80,7 @@ const enum_case_assemble = {
   title: arrToTitleCase,
 };
 
-function anyCaseToAnycase(caseFrom, caseTo, str) {
+function anyCaseToAnyCase(caseFrom, caseTo, str) {
   if (typeof str !== 'string') {
     return null;
   }
@@ -100,7 +100,7 @@ function anyCaseToAnycase(caseFrom, caseTo, str) {
 }
 
 function anycaseToTitle(caseOrigin, str) {
-  const title = anyCaseToAnycase(caseOrigin, 'title', str);
+  const title = anyCaseToAnyCase(caseOrigin, 'title', str);
   return title;
 }
 
@@ -109,6 +109,6 @@ module.exports = {
   put,
   load,
   anycaseToTitle,
-  anyCaseToAnycase,
+  anyCaseToAnyCase,
   fileNameFromPath,
 };
