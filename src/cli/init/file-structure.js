@@ -8,8 +8,8 @@ const SERVER_COMPONENT_PATH = `${appRoot}/(kiwi)/[...kiwi]`;
 const SERVER_COMPONENT_PATH_KIWI_ROOT = `${appRoot}/(kiwi)/[[...kiwi]]`;
 const API_PATH = `${appRoot}/(kiwi)/api/kiwi/[...kiwi]`;
 
-function createKiwiDirectory({ useKiwiRootPage }) {
-  let serverPath = useKiwiRootPage ? SERVER_COMPONENT_PATH_KIWI_ROOT : SERVER_COMPONENT_PATH;
+function createKiwiDirectory({ useRootPage }) {
+  let serverPath = useRootPage ? SERVER_COMPONENT_PATH_KIWI_ROOT : SERVER_COMPONENT_PATH;
 
   mkdirSync(serverPath, { recursive: true });
   mkdirSync(API_PATH, { recursive: true });
@@ -26,8 +26,8 @@ async function createApiStructure() {
   return structure;
 }
 
-async function createPageStructure({ useKiwiRootPage }) {
-  let serverPath = useKiwiRootPage ? SERVER_COMPONENT_PATH_KIWI_ROOT : SERVER_COMPONENT_PATH;
+async function createPageStructure({ useRootPage }) {
+  let serverPath = useRootPage ? SERVER_COMPONENT_PATH_KIWI_ROOT : SERVER_COMPONENT_PATH;
 
   const structure = {
     path: serverPath,

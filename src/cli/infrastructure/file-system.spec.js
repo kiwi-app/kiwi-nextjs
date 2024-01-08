@@ -1,11 +1,5 @@
 const fs = require('fs');
-const {
-  ls,
-  put,
-  anyCaseToAnyCase,
-  anycaseToTitle,
-  fileNameFromPath,
-} = require('./file-system');
+const { ls, put, anyCaseToAnyCase, anycaseToTitle, fileNameFromPath } = require('./file-system');
 
 jest.mock('fs');
 

@@ -4,45 +4,54 @@ const templates = require('./templates');
 const deploySection = require('./deploy');
 
 jest.mock('../infrastructure/commons');
+jest.mock('../infrastructure/file-system');
 
 describe('deploySection()', () => {
-    test('should deploy the section correctly when it`s a simple section', async () => {
-        const setup = {
-            name: 'main header',
-            type: 'simple',
-            file: 'main-header.tsx',
-            module: 'MainHeader',
-        };
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-        const expectedStructure = [{
-            path: `${root}/src/sections`,
-            files: {
-                'main-header.tsx': await templates.simpleSection(setup)
-            }
-        }];
+  test('should deploy the section correctly when it`s a simple section', async () => {
+    const setup = {
+      name: 'main header',
+      type: 'simple',
+      file: 'main-header.tsx',
+      module: 'MainHeader',
+    };
 
-        await deploySection(setup);
+    const expectedStructure = [
+      {
+        path: `${root}/src/sections`,
+        files: {
+          'main-header.tsx': await templates.simpleSection(setup),
+        },
+      },
+    ];
 
-        expect(deployStructure).toHaveBeenCalledWith(expectedStructure);
-    });
+    await deploySection(setup);
 
-    test('should deploy the section correctly when it`s a loader section', () => {
-        const setup = {
-            name: 'product list',
-            type: 'loader',
-            file: 'product-list.tsx',
-            module: 'ProductList',
-        };
+    expect(deployStructure).toHaveBeenCalledWith(expectedStructure);
+  });
 
-        const expectedStructure = [{
-            path: `${root}/src/sections`,
-            files: {
-                'product-list.tsx': templates.loaderSection(setup)
-            }
-        }];
+  test('should deploy the section correctly when it`s a loader section', async () => {
+    const setup = {
+      name: 'product list',
+      type: 'loader',
+      file: 'product-list.tsx',
+      module: 'ProductList',
+    };
 
-        deploySection(setup);
+    const expectedStructure = [
+      {
+        path: `${root}/src/sections`,
+        files: {
+          'product-list.tsx': await templates.loaderSection(setup),
+        },
+      },
+    ];
 
-        expect(deployStructure).toHaveBeenCalledWith(expectedStructure);
-    });
+    await deploySection(setup);
+
+    expect(deployStructure).toHaveBeenCalledWith(expectedStructure);
+  });
 });

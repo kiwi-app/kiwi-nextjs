@@ -3,6 +3,7 @@ const packageJson = require(`${root}/package.json`);
 const { prompt } = require('../infrastructure/prompts');
 const { unlinkSync } = require('fs');
 const { setPackageJsonProp } = require('../infrastructure/commons');
+const { cases } = require('../infrastructure/file-system');
 
 async function getPackageName() {
   const pkg = await prompt({
@@ -13,6 +14,17 @@ async function getPackageName() {
   });
 
   return pkg.name;
+}
+
+async function getManifestImportAlias() {
+  const result = await prompt({
+    type: 'text',
+    name: 'alias',
+    message: 'What is your default import alias?',
+    initial: '@/',
+  });
+
+  return result.alias;
 }
 
 async function getUseKiwiRootPage() {
@@ -29,8 +41,28 @@ async function getUseKiwiRootPage() {
   return isKiwiRootPage.root;
 }
 
+async function getSectionCase() {
+  const sectionCase = await prompt({
+    type: 'select',
+    name: 'type',
+    message: 'What case you will use to name your sections?',
+    choices: Object.keys(cases).map((type) => ({
+      title: `${type} (${cases[type]})`,
+      value: type,
+    })),
+  });
+
+  const selectedCase = sectionCase.type.toLowerCase();
+  return selectedCase;
+}
+
 async function customUserSetup() {
-  const setup = { name: packageJson.name, useKiwiRootPage: false };
+  const setup = {
+    name: packageJson.name,
+    useRootPage: false,
+    sectionFileCase: 'kebab',
+    manifestImportAlias: '@/',
+  };
 
   const name = await getPackageName();
   if (name !== packageJson.name) {
@@ -39,16 +71,23 @@ async function customUserSetup() {
     console.log(`✔  Site name changed to ${name}`);
   }
 
-  const indexPagePath = `${root}/src/app/page.tsx`;
   const useKiwiRootPage = await getUseKiwiRootPage();
+  setup.useRootPage = useKiwiRootPage;
+
+  const sectionCase = await getSectionCase();
+  setup.sectionFileCase = sectionCase;
+
+  const manifestImportAlias = await getManifestImportAlias();
+  setup.manifestImportAlias = manifestImportAlias;
+
   if (useKiwiRootPage) {
-    setup.useKiwiRootPage = true;
+    const indexPagePath = `${root}/src/app/page.tsx`;
 
     try {
       unlinkSync(indexPagePath);
       console.log('✔  Kiwi is on your index page');
     } catch (e) {
-      console.log('ℹ  It wasn`t possible to remove your index page component');
+      console.log('-  It wasn`t possible to remove your index page component');
     }
   }
 

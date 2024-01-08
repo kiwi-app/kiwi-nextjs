@@ -17,7 +17,7 @@ describe('file and folder structure', () => {
     });
 
     test('should use double brackets [[kiwi]] for pages and single [kiwi] for api if setup uses kiwi root page', () => {
-      createKiwiDirectory({ useKiwiRootPage: true });
+      createKiwiDirectory({ useRootPage: true });
 
       expect(fs.mkdirSync).toHaveBeenNthCalledWith(
         1,
@@ -37,7 +37,7 @@ describe('file and folder structure', () => {
     });
 
     test('should use single brackets [kiwi] for pages and api if setup does not uses kiwi root page', () => {
-      createKiwiDirectory({ useKiwiRootPage: false });
+      createKiwiDirectory({ useRootPage: false });
 
       expect(fs.mkdirSync).toHaveBeenNthCalledWith(
         1,
@@ -63,7 +63,7 @@ describe('file and folder structure', () => {
     });
 
     test('should create structure for api containing a single file called "route.ts" at "/(kiwi)/api/kiwi/[...kiwi]"', async () => {
-      await createKiwiStructure({ useKiwiRootPage: true });
+      await createKiwiStructure({ useRootPage: true });
 
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         expect.stringContaining(`/(kiwi)/api/kiwi/[...kiwi]/route.ts`),
@@ -72,7 +72,7 @@ describe('file and folder structure', () => {
     });
 
     test('should create structure for pages containing a three files called client.tsx, server.tsx and page.tsx at "/(kiwi)/[...kiwi]" when setup does not uses kiwi root page', async () => {
-      await createKiwiStructure({ useKiwiRootPage: false });
+      await createKiwiStructure({ useRootPage: false });
 
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         expect.stringContaining(`/(kiwi)/[...kiwi]/page.tsx`),
@@ -89,7 +89,7 @@ describe('file and folder structure', () => {
     });
 
     test('should create structure for pages containing a three files called client.tsx, server.tsx and page.tsx at "/(kiwi)/[[...kiwi]]" when setup uses kiwi root page', async () => {
-      await createKiwiStructure({ useKiwiRootPage: true });
+      await createKiwiStructure({ useRootPage: true });
 
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         expect.stringContaining(`/(kiwi)/[[...kiwi]]/page.tsx`),

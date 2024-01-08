@@ -1,13 +1,8 @@
 const root = require('path').resolve();
+const { getConfigFile } = require('./config-file');
 const { put } = require('./file-system');
 const prettier = require('prettier');
 const packageJson = require(`${root}/package.json`);
-
-const userKiwiConfig = packageJson.kiwiConfig || {};
-const kiwiConfig = {
-  moduleFileNameCase: 'kebab',
-  ...userKiwiConfig,
-};
 
 async function prettyFileContent(content, parser = 'babel-ts') {
   const formattedOutput = await prettier.format(content, { parser });
@@ -27,6 +22,8 @@ async function prettyProtectedFileContent(content, directive = '') {
 }
 
 function getKiwiConfig(key) {
+  const kiwiConfig = getConfigFile();
+
   if (!Object.hasOwn(kiwiConfig, key)) return null;
 
   const value = kiwiConfig[key];

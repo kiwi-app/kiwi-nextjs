@@ -4,15 +4,19 @@ const { writeFileSync } = require('fs');
 const { prettyProtectedFileContent } = require('../infrastructure/commons');
 const { name: site } = require(`${root}/package.json`);
 const { createPropSchema } = require('./schema');
+const { getConfigFile } = require('../infrastructure/config-file');
 
 const SECTION_PATH = `${root}/src/sections`;
 
 function getSections(path, sections) {
   if (!sections?.length) return [];
 
+  const { manifestImportAlias: alias } = getConfigFile();
+
   const services = sections.map((section) => {
     const component = {
-      path: `@/sections/${section.split('.')[0]}`,
+      path: `${alias}sections/${section.split('.')[0]}`,
+      key: `@/sections/${section.split('.')[0]}`,
       schema: createPropSchema(`${path}/${section}`),
     };
 
@@ -33,12 +37,11 @@ function getSevices() {
 }
 
 async function manifest(args) {
+  const configFile = getConfigFile();
   const services = getSevices();
 
   const sections = services.sections
-    .map(
-      ({ path, schema }, i) => `"${path}": { module: $${i}, schema: ${JSON.stringify(schema)} },`,
-    )
+    .map(({ key, schema }, i) => `"${key}": { module: $${i}, schema: ${JSON.stringify(schema)} },`)
     .join('\n    ');
 
   const imports = services.sections
