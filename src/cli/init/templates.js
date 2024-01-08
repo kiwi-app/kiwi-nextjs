@@ -1,8 +1,8 @@
-const { prettyProtectedFileContent } = require('../infrastructure/commons');
+const { prettyProtectedFileContent, packageName } = require('../infrastructure/commons');
 
 const pageTemplate = prettyProtectedFileContent(`
     import manifest from '@manifest';
-    import { CatchAll } from '@kiwi-app/kiwi-nextjs';
+    import { CatchAll } from '${packageName}';
     import ClientComponent from './client';
     import ServerComponent from './server';
     
@@ -14,7 +14,7 @@ const pageTemplate = prettyProtectedFileContent(`
 const clientCodeTemplate = prettyProtectedFileContent(
   `
     import manifest from '@manifest';
-    import { CatchAllClient } from '@kiwi-app/kiwi-nextjs';
+    import { CatchAllClient } from '${packageName}';
     
     const Page = CatchAllClient(manifest);
 
@@ -24,13 +24,13 @@ const clientCodeTemplate = prettyProtectedFileContent(
 );
 
 const serverCodeTemplate = prettyProtectedFileContent(`
-    import { CatchAllServer } from '@kiwi-app/kiwi-nextjs';
+    import { CatchAllServer } from '${packageName}';
     export default CatchAllServer;    
 `);
 
 const routeTemplate = prettyProtectedFileContent(`
     import manifest from '@manifest';
-    import { LiveRoute } from '@kiwi-app/kiwi-nextjs';
+    import { LiveRoute } from '${packageName}';
 
     export const { GET, POST, OPTIONS, PATCH } = LiveRoute(manifest);
 `);

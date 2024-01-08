@@ -1,9 +1,7 @@
-const { prettyFileContent } = require('../infrastructure/commons');
+const { prettyFileContent, packageName } = require('../infrastructure/commons');
 
 const simpleSection = ({ module }) =>
   prettyFileContent(`
-    import React from 'react';
-
     export interface ${module}Props {
         title: string,
     }
@@ -34,8 +32,7 @@ const simpleSection = ({ module }) =>
 
 const loaderSection = ({ module }) =>
   prettyFileContent(`
-    import React from 'react';
-    import { LoaderRequest } from "@kiwi-app/kiwi-nextjs";
+    import { LoaderRequest } from "${packageName}";
 
     // Component
     export interface ${module}Props {}

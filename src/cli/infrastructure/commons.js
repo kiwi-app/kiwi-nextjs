@@ -59,4 +59,5 @@ module.exports = {
   getKiwiConfig,
   setPackageJsonProp,
   deployStructure,
+  packageName: packageJson.name,
 };
