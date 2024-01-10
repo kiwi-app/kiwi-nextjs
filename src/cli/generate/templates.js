@@ -96,7 +96,8 @@ const loaderSection = ({ module }) =>
 
     // Loader
     export interface ${module}LoaderProps {
-        imageCount: number;
+        /** @description sum this number to a random one */
+        number: number;
     }
 
     export async function Loader(req: LoaderRequest, props: ${module}LoaderProps): Promise<${module}Loader> {
