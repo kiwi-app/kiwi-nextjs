@@ -14,7 +14,7 @@ const tailwindConfig = require('./tailwind.config');
 
 export default [
   {
-    input: './index.ts',
+    input: './src/index.ts',
     output: [
       {
         file: packageJson.main,
@@ -26,6 +26,10 @@ export default [
       postcss({
         extensions: ['.css'],
         plugins: [tailwindcss(tailwindConfig)],
+        minimize: true,
+        inject: {
+          insertAt: 'top',
+        },
       }),
       typescript(),
       peerDepsExternal(),
@@ -41,19 +45,19 @@ export default [
           },
           {
             src: ['src/cli/manifest/*.js', '!**/*.spec.js'],
-            dest: 'build/cli/manifest'
+            dest: 'build/cli/manifest',
           },
           {
             src: ['src/cli/generate/*.js', '!**/*.spec.js'],
-            dest: 'build/cli/generate'
+            dest: 'build/cli/generate',
           },
           {
             src: ['src/cli/init/*.js', '!**/*.spec.js'],
-            dest: 'build/cli/init'
+            dest: 'build/cli/init',
           },
           {
             src: ['src/cli/*.js'],
-            dest: 'build/cli'
+            dest: 'build/cli',
           },
         ],
       }),

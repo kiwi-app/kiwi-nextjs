@@ -3,7 +3,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { execSync } from 'child_process';
 import launchEditor from 'launch-editor';
-import { mergeManifest } from '../helpers';
+import { mergeManifests } from '../helpers';
+import { KiwiOptions } from '../types';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,7 +12,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-export function LiveRoute(manifest: any) {
+export function LiveRoute(options: KiwiOptions) {
+  const mergedManifest = mergeManifests(options);
+
   return {
     PATCH: async (req: NextRequest, { params: { kiwi } }: { params: { kiwi: string[] } }) => {
       if (kiwi.join('/') === 'live/manifest') {
@@ -23,7 +26,7 @@ export function LiveRoute(manifest: any) {
       if (kiwi.join('/') === 'revalidate') {
         const { path, site } = await req.json();
 
-        if (site !== manifest.site) {
+        if (site !== mergedManifest.site) {
           return NextResponse.json({}, { headers: corsHeaders });
         }
 
@@ -39,8 +42,6 @@ export function LiveRoute(manifest: any) {
     GET: (request: NextRequest, { params: { kiwi } }: { params: { kiwi: string[] } }) => {
       const fullPath = kiwi.join('/');
       if (fullPath === 'live') {
-        const mergedManifest = mergeManifest(manifest);
-
         return NextResponse.json(mergedManifest, { headers: corsHeaders });
       }
 

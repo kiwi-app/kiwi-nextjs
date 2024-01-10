@@ -43,7 +43,9 @@ const loaderSection = ({ module }) =>
 
     // Component
     interface ${module}Loader {
-        topSecretImages: string[]
+        random: number;
+        number: number;
+        sum: number;
     }
     
     export interface ${module}Props {
@@ -51,12 +53,14 @@ const loaderSection = ({ module }) =>
         loader: ${module}Loader;
     }
 
-    const ${module} = ({ title, loader }: ${module}Props) => (
+    const ${module} = ({ title, loader, ...props }: ${module}Props) => (
         <div>
             <h1>
                 This is the section ${module}! <br />
                 <small>Use KiwiAdmin to change 'title' value.</small>
             </h1>
+
+            <h2>You can see your loader metadata: {JSON.stringify(props)}</h2>
 
             <br />
             <br />
@@ -67,12 +71,10 @@ const loaderSection = ({ module }) =>
 
             <br />
             <br />
-            <h3>Top secret images from loader</h3>
-            {loader && 
-                <div style={{ display: 'flex', flexWrap: 'wrap'  }}>
-                    {loader.topSecretImages.map(topSecretImage => <img key={topSecretImage} src={topSecretImage} />)}
-                </div>
-            }
+            <h3>Loader info:</h3>
+            <p>
+            {loader?.random} + {loader?.number} = {loader?.sum}{' '}
+            </p>
 
             <br />
             <br />
@@ -98,23 +100,12 @@ const loaderSection = ({ module }) =>
     }
 
     export async function Loader(req: LoaderRequest, props: ${module}LoaderProps): Promise<${module}Loader> {
-        const topSecretImages = [];
+        const random = Math.floor(Math.random() * 101);
 
-        for (let i = 0; i < props.imageCount; i++) {
-            try {
-                const response = await fetch('https://source.unsplash.com/random/500x500/?kiwis');
-                topSecretImages.push(response.url);
-            } catch (_) {
-                console.log('Oops!');
-            }
-        }
-
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    topSecretImages,
-                });
-            }, 2000);
+        return Promise.resolve({
+            random,
+            number: props.number,
+            sum: random + props.number,
         });
     }
 

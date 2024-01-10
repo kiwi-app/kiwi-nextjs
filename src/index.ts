@@ -1,6 +1,8 @@
+import './index.css';
+
 export * from './components';
 export * from './routes';
-export * from './components/RichText';
+export * from './components/rich-text';
 
 export type { EventData } from './helpers';
 export type {
@@ -12,10 +14,12 @@ export type {
 } from './components';
 
 export type {
+  KiwiOptions,
+  KiwiManifest,
   LoaderRequest,
-  Manifest,
   LiveEditorMessage,
   Page,
   Schema,
   SchemaProperty,
+  KiwiConfig,
 } from './types';

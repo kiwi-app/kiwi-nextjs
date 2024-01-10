@@ -1,5 +1,13 @@
-import { Manifest, LiveEditorMessage, Page, ExportedModule, LoaderRequest } from '../types';
-import internalManifest from '../../manifest';
+import {
+  KiwiManifest,
+  LiveEditorMessage,
+  Page,
+  ExportedModule,
+  LoaderRequest,
+  SectionProps,
+  KiwiOptions,
+} from '../types';
+import internalManifest from '../manifest';
 
 const {
   KIWI_ADMIN_URL,
@@ -28,21 +36,24 @@ const sectionHoverEvent = (data: EventData): LiveEditorMessage => ({
   data,
 });
 
+const objectIsEqual = (obj1: { [key: string]: any }, obj2: { [key: string]: any }) => {
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
+};
+
 export async function getLoaderProps(
   loaderRequest: LoaderRequest,
-  props: { [key: string]: any },
-  oldProps: { [key: string]: any },
+  props: SectionProps,
+  oldProps: SectionProps,
   sectionModule: ExportedModule,
-  manifest: Manifest,
+  manifest: KiwiManifest,
   isLive: boolean,
-): Promise<{ [key: string]: any }> {
+): Promise<SectionProps> {
   const { schema, module } = sectionModule;
-  let newProps: any = { ...props };
+  let newProps: SectionProps = { ...props };
   delete newProps._test;
 
   const loaders: Promise<any>[] = [];
   const loadersProps: string[] = [];
-  const _loaderMetadata: { [key: string]: any } = {};
 
   if (manifest.loaders) {
     for (const property of schema?.component?.properties || []) {
@@ -59,23 +70,12 @@ export async function getLoaderProps(
   let hasExportedLoader = false;
   let hasUpdatedLoaderProps = false;
   if (schema.loader && module.Loader) {
+    const oldLoaderMetadata = oldProps._loaderMetadata ?? {};
+    const newLoaderMedata = newProps._loaderMetadata ?? {};
+
     hasExportedLoader = true;
-    let loaderProps: { [T: string]: unknown } = {};
-
-    for (const loaderProperty of schema.loader.properties || []) {
-      const { name } = loaderProperty;
-
-      const oldLoaderMetadata = oldProps._loaderMetadata ?? {};
-      if (newProps[name] !== oldLoaderMetadata[name]) {
-        hasUpdatedLoaderProps = true;
-      }
-
-      _loaderMetadata[name] = newProps[name];
-      delete newProps[name];
-      loaderProps[name] = props[name];
-    }
-
-    if (hasUpdatedLoaderProps || schema.loader.propsFromLoaderRequest) {
+    hasUpdatedLoaderProps = !objectIsEqual(newLoaderMedata, oldLoaderMetadata);
+    if (hasUpdatedLoaderProps || schema.loader?.propsFromLoaderRequest) {
       loaders.push(
         module.Loader(
           isLive
@@ -84,7 +84,7 @@ export async function getLoaderProps(
                 params: props._test,
               }
             : loaderRequest,
-          loaderProps,
+          newProps._loaderMetadata,
         ),
       );
     }
@@ -101,12 +101,17 @@ export async function getLoaderProps(
       newProps = {
         ...newProps,
         loader: loaderResponse,
-        _loaderMetadata,
       };
     }
   }
 
-  if (!hasUpdatedLoaderProps) return { ...oldProps, ...newProps };
+  if (!hasUpdatedLoaderProps && hasExportedLoader && oldProps.loader) {
+    newProps = {
+      ...newProps,
+      loader: oldProps.loader,
+    };
+  }
+
   return newProps;
 }
 
@@ -135,14 +140,23 @@ export const getPageConfig = async (site: string, page: string): Promise<Page | 
   }
 };
 
-export const mergeManifest = (manifest: any): Manifest => {
-  return {
+export const mergeManifests = (options: KiwiOptions): KiwiManifest => {
+  const { manifest, externalManifests = [] } = options;
+
+  const allManifests = [...externalManifests, internalManifest];
+  const mainManifest: KiwiManifest = {
     ...manifest,
-    sections: {
-      ...manifest.sections,
-      ...internalManifest.sections,
-    },
   };
+
+  for (const manifest of allManifests) {
+    for (const [key, value] of Object.entries(manifest.sections)) {
+      const sectionKey = key.replace('@', `@${manifest.site}`);
+
+      mainManifest.sections[sectionKey] = value;
+    }
+  }
+
+  return mainManifest;
 };
 
 export const sendSectionHoverEvent = (iframeRef: Window, data: EventData) => {

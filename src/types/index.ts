@@ -1,86 +1,97 @@
-export type Page = {
+export interface Page {
   id: string;
   siteId: string;
   name: string;
   path: string;
   updatedAt: Date;
   sections: Section[];
-};
+}
 
-export type LiveEditorMessage = {
+export interface LiveEditorMessage {
   type: string;
   event: 'hover-section' | 'click-section' | 'remove-section' | 'page-update';
   data: { [key: string]: any };
-};
+}
 
 export const primitiveTypes = ['string', 'symbol', 'bigint', 'number', 'boolean'] as const;
+export const customTypes = ['RichText'] as const;
 
-export type ObjectSchema = {
+export interface ObjectSchema {
   type: 'object';
   name: string;
   description?: string;
   properties?: SchemaProperty[];
   required?: string[];
-};
+}
 
-export type ArraySchema = {
+export interface ArraySchema {
   type: 'array';
   name: string;
-  items: { type: (typeof primitiveTypes)[number] } | SchemaProperty;
+  items: Partial<SchemaProperty>;
   description?: string;
-};
+}
 
-export type PrimitiveSchema = {
+export interface PrimitiveSchema {
   type: (typeof primitiveTypes)[number];
   name: string;
   description?: string;
-};
+}
 
-export type CustomSchema = {
+export interface CustomSchema {
   type: 'RichText';
   name: string;
   description?: string;
-};
+}
 
 export type SchemaProperty = ObjectSchema | ArraySchema | PrimitiveSchema | CustomSchema;
 
-export type Schema = {
+export interface Schema {
   properties: SchemaProperty[];
   required: string[];
   type: string;
   propsFromLoaderRequest?: boolean;
-};
+}
 
-export type Section = {
+export interface Section {
   id: string;
   type: string;
-  props: { [key: string]: any };
+  props: SectionProps;
   schema: { component: Schema; loader?: Schema };
-};
+}
 
-export type ExportedModule = {
+export type SectionProps = { [key: string]: any; _loaderMetadata?: SectionProps };
+
+export interface ExportedModule {
   module: {
     default: JSX.Element | Function;
     Loading?: JSX.Element | Function;
     Loader?: (req: LoaderRequest, props: any) => Promise<any>;
   };
   schema: { component: Schema; loader?: Schema };
-};
+}
 
 export type SearchParams = { [key: string]: string | string[] | undefined };
 
-export type LoaderRequest<T = { [T: string]: string }> = {
+export interface LoaderRequest<T = { [T: string]: string }> {
   params?: T;
   searchParams?: SearchParams;
   headers?: { [T: string]: string };
   cookies?: { [T: string]: string };
-};
+}
 
-export type Manifest = {
+export interface KiwiManifest {
   sections: { [S: string]: ExportedModule };
-  [B: string]: { [T: string]: ExportedModule };
-  // @ts-ignore
+  loaders?: { [S: string]: ExportedModule };
   site: string;
-  // @ts-ignore
-  baseUrl: string;
-};
+}
+
+export interface KiwiOptions {
+  manifest: KiwiManifest;
+  externalManifests?: KiwiManifest[];
+}
+
+export interface KiwiConfig {
+  useRootPage?: boolean;
+  manifestImportAlias?: string;
+  sectionFileCase?: 'kebab' | 'snake' | 'camel';
+}

@@ -1,6 +1,6 @@
 const tsj = require('ts-json-schema-generator');
 const { fileNameFromPath, anycaseToTitle } = require('../infrastructure/file-system');
-const { getKiwiConfig, getConfigFile } = require('../infrastructure/config-file');
+const { getKiwiConfig } = require('../infrastructure/config-file');
 
 const DEFAULT_TYPES = ['RichText'];
 
@@ -23,7 +23,7 @@ function createSchema(modulePath) {
     const schema = tsj.createGenerator(config).createSchema(config.type);
 
     return schema;
-  } catch (e) {
+  } catch (_) {
     console.log(`-  It wasn't possible to generate the schema: module[${modulePath}].`);
   }
 }
@@ -67,6 +67,7 @@ function getInterfaceByRef(schema, $ref) {
 
 function moduleToArrayModule(name, module) {
   const { type, required, properties } = module;
+
   return {
     name,
     type: 'array',
@@ -80,11 +81,11 @@ function buildObjectTypeProperty(schema, property, name) {
 }
 
 function buildRefProperty(schema, property, name) {
-  const { $ref } = property;
+  const { $ref, description } = property;
   const type = parseRef($ref);
 
   if (DEFAULT_TYPES.includes(type)) {
-    return { name, type };
+    return { name, type, description };
   }
 
   const refInterface = getInterfaceByRef(schema, $ref);
@@ -94,7 +95,7 @@ function buildRefProperty(schema, property, name) {
 }
 
 function buildArrayTypeProperty(schema, property, name) {
-  const { items } = property;
+  const { items, description } = property;
 
   if (Object.hasOwn(items, '$ref')) {
     const module = buildRefProperty(schema, items, name);
@@ -102,13 +103,14 @@ function buildArrayTypeProperty(schema, property, name) {
 
     if (type === 'object') {
       const prop = moduleToArrayModule(name, module);
-      return prop;
+      return { ...prop, description };
     }
 
     return {
       name,
       type: 'array',
       items: { type },
+      description,
     };
   }
 
@@ -116,15 +118,15 @@ function buildArrayTypeProperty(schema, property, name) {
     const module = buildObjectTypeProperty(schema, items, name);
     const prop = moduleToArrayModule(name, module);
 
-    return prop;
+    return { ...prop, description };
   }
 
-  return { name, type: 'array', items };
+  return { name, type: 'array', items, description };
 }
 
 function buildProperty(schema, properties, name) {
   const property = properties[name];
-  const { type } = property;
+  const { type, description } = property;
 
   if (Object.hasOwn(property, '$ref')) {
     return buildRefProperty(schema, property, name);
@@ -138,17 +140,18 @@ function buildProperty(schema, properties, name) {
     return buildArrayTypeProperty(schema, property, name);
   }
 
-  return { name, type };
+  return { name, type, description };
 }
 
 function assembleSchema(schema, module) {
-  const { required, type } = module;
+  const { required, type, description } = module;
   const moduleProperties = Object.keys(module.properties);
 
   const properties = moduleProperties.reduce((state, prop) => {
     if (prop === 'loader') {
       return state;
     }
+
     const property = buildProperty(schema, module.properties, prop);
     return [...state, property];
   }, []);
@@ -157,6 +160,7 @@ function assembleSchema(schema, module) {
     type,
     required,
     properties,
+    description,
   };
 
   return assembled;

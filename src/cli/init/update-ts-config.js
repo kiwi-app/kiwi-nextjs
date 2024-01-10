@@ -29,6 +29,7 @@ async function updateTsConfig() {
       ...compilerOptions,
       paths: {
         ...compilerOptions.paths,
+        '@kiwi-options': ['./src/app/(kiwi)/options.ts'],
         '@manifest': ['./manifest.ts'],
       },
     },

@@ -1,7 +1,7 @@
 const root = require('path').resolve();
 const { ls } = require('../infrastructure/file-system');
 const { writeFileSync } = require('fs');
-const { prettyProtectedFileContent } = require('../infrastructure/commons');
+const { prettyProtectedFileContent, packageName } = require('../infrastructure/commons');
 const { name: site } = require(`${root}/package.json`);
 const { createPropSchema } = require('./schema');
 const { getConfigFile } = require('../infrastructure/config-file');
@@ -48,9 +48,11 @@ async function manifest(args) {
     .join('\n');
 
   const output = `
+    import { KiwiManifest } from '${packageName}';
+
     ${imports}
 
-    const manifest = {
+    const manifest: KiwiManifest = {
       sections: {
         ${sections}
       },

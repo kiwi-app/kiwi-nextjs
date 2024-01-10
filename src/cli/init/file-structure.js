@@ -4,6 +4,7 @@ const templates = require('./templates');
 const { mkdirSync } = require('fs');
 const { deployStructure } = require('../infrastructure/commons');
 
+const OPTIONS_PATH = `${appRoot}/(kiwi)`;
 const SERVER_COMPONENT_PATH = `${appRoot}/(kiwi)/[...kiwi]`;
 const SERVER_COMPONENT_PATH_KIWI_ROOT = `${appRoot}/(kiwi)/[[...kiwi]]`;
 const API_PATH = `${appRoot}/(kiwi)/api/kiwi/[...kiwi]`;
@@ -41,11 +42,23 @@ async function createPageStructure({ useRootPage }) {
   return structure;
 }
 
+async function createOptionsStructure() {
+  const structure = {
+    path: OPTIONS_PATH,
+    files: {
+      'options.ts': await templates.optionsTemplate,
+    },
+  };
+
+  return structure;
+}
+
 async function createKiwiStructure(setup) {
+  const optionsStructure = await createOptionsStructure();
   const apiStructure = await createApiStructure();
   const pageStructure = await createPageStructure(setup);
 
-  const kiwiStructureTemplate = [apiStructure, pageStructure];
+  const kiwiStructureTemplate = [optionsStructure, apiStructure, pageStructure];
 
   deployStructure(kiwiStructureTemplate);
 }

@@ -8,16 +8,54 @@ This project contains a CLI with two actions:
   - _simple_ section that uses "static" props from kiwi admin
   - _loader_ section that also uses props from kiwi admin but also make external request before render.
 
-## [Demo](https://github.com/kiwi-app/kiwi-template)
+# [Demo project](https://github.com/kiwi-app/kiwi-template)
+
+# Getting started
+
+Create your [Next](https://nextjs.org/) app
+
+```bash
+npx create-next-app@latest
+```
+
+Install kiwi lib for nextjs:
+
+```bash
+npm install @kiwi-app/kiwi-nextjs
+```
+
+Run init for first configuration (also will generate your first empty manifest):
+
+```bash
+npx kiwi init
+```
+
+Generate your first section (automatically updates your manifest):
+
+```bash
+npx kiwi generate
+```
+
+Start your project
+
+```bash
+npm run dev
+```
+
+Open [Kiwi Admin](https://kiwi-admin.vercel.app/), link your site and get the API Key:
+
+![kiwi api key creation](docs/kiwi_api_key.gif)
 
 ## Configuration
 
 You should configure this lib by creating the following env vars:
 
-- KIWI_ADMIN_URL
+- KIWI_ADMIN_URL (ex: `https://kiwi-admin.vercel.app/`)
 - KIWI_API_KEY
 
 If you want to remove or change cache time, you can set `KIWI_CACHE_TTL` (in seconds) env var
+
+# About kiwi
 
 ## Sections
 

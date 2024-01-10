@@ -1,15 +1,19 @@
 import { cookies, headers } from 'next/headers';
-import { getPageConfig, mergeManifest } from '../../helpers';
-import { LoaderRequest, SearchParams, Section } from '../../types';
-import SuspenseSection from './SuspenseSection';
+import { getPageConfig, mergeManifests } from '../../helpers';
+import { KiwiOptions, LoaderRequest, SearchParams, Section } from '../../types';
+import SuspenseSection from './suspense-section';
 
 export type CatchAllProps = { params: { kiwi: string[] }; searchParams: SearchParams };
 
-export default function KiwiCatchAll(manifest: any, ClientComponent: any, ServerComponent: any) {
+export default function KiwiCatchAll(
+  options: KiwiOptions,
+  ClientComponent: any,
+  ServerComponent: any,
+) {
   return async function CatchAll({ params: { kiwi }, searchParams }: CatchAllProps) {
     const path = kiwi?.join('/') || '';
     const isLive = path.startsWith('kiwi/live');
-    const mergedManifest = mergeManifest(manifest);
+    const mergedManifest = mergeManifests(options);
 
     const requestInfo: LoaderRequest = {
       searchParams,
@@ -27,7 +31,7 @@ export default function KiwiCatchAll(manifest: any, ClientComponent: any, Server
       requestInfo.headers![key] = value;
     });
 
-    const page = await getPageConfig(manifest.site, path);
+    const page = await getPageConfig(mergedManifest.site, path);
     if (!page) return null;
 
     if (page.path.includes(':')) {

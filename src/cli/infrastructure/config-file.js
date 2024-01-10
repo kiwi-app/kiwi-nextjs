@@ -1,6 +1,6 @@
 const root = require('path').resolve();
 const { put, load } = require('../infrastructure/file-system');
-const { prettyFileContent } = require('../infrastructure/commons');
+const { prettyFileContent, packageName } = require('../infrastructure/commons');
 
 const defaultConfigFile = {
   useRootPage: true,
@@ -30,9 +30,7 @@ function getConfigFile() {
         ...localConfigFile,
       };
     }
-  } catch (_) {
-    console.log('It wasn`t possible to open the kiwi.config.js file. Using the default config.');
-  }
+  } catch (_) {}
 
   return configFile;
 }
@@ -50,7 +48,10 @@ async function createConfigFile(setup) {
   }
 
   const configFileContent = await prettyFileContent(`
-    module.exports = ${JSON.stringify(configFile)}
+    /** @type {import('${packageName}').KiwiConfig} */
+    const kiwiConfig = ${JSON.stringify(configFile)}
+
+    module.exports = kiwiConfig;
   `);
   put(configFileContent, `${root}/kiwi.config.js`);
 }

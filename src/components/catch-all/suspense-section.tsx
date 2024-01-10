@@ -1,5 +1,5 @@
 import { getLoaderProps } from '../../helpers';
-import { ExportedModule, LoaderRequest, Manifest, Section } from '../../types';
+import { ExportedModule, LoaderRequest, KiwiManifest, Section } from '../../types';
 
 export default async function SuspenseSection({
   request,
@@ -11,7 +11,7 @@ export default async function SuspenseSection({
   request: LoaderRequest;
   section: Section;
   sectionModule: ExportedModule;
-  manifest: Manifest;
+  manifest: KiwiManifest;
   isLive: boolean;
 }) {
   const sectionProps = await getLoaderProps(
