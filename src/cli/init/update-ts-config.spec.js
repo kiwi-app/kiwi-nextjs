@@ -16,6 +16,7 @@ describe('updateTsConfig()', () => {
       compilerOptions: {
         paths: {
           '@test': ['./test.ts'],
+          '@kiwi-options': ['./src/app/(kiwi)/options.ts'],
         },
       },
     });
@@ -24,6 +25,7 @@ describe('updateTsConfig()', () => {
       compilerOptions: {
         paths: {
           '@test': ['./test.ts'],
+          '@kiwi-options': ['./src/app/(kiwi)/options.ts'],
           '@manifest': ['./manifest.ts'],
         },
       },
@@ -41,6 +43,7 @@ describe('updateTsConfig()', () => {
     expectedNewTsConfig = {
       compilerOptions: {
         paths: {
+          '@kiwi-options': ['./src/app/(kiwi)/options.ts'],
           '@manifest': ['./manifest.ts'],
         },
       },

@@ -3,7 +3,7 @@ const manifest = require('./index');
 const fs = require('fs');
 const fileSystem = require('../infrastructure/file-system');
 const tsj = require('ts-json-schema-generator');
-const { prettyProtectedFileContent } = require('../infrastructure/commons');
+const { prettyProtectedFileContent, packageName } = require('../infrastructure/commons');
 
 jest.mock('fs');
 jest.mock('../infrastructure/file-system');
@@ -37,9 +37,11 @@ describe('manifest()', () => {
     }));
 
     const expectedOutput = `
+            import { KiwiManifest } from "${packageName}";
+
             import * as $0 from "@/sections/header";
             
-            const manifest = {
+            const manifest: KiwiManifest = {
                 sections: {
                     "@/sections/header": {
                         module: $0,
@@ -55,7 +57,7 @@ describe('manifest()', () => {
                         },
                     },
                 },
-                site: "@kiwi-app/kiwi-nextjs",
+                site: "${packageName}",
             };
             
             export default manifest;`;
@@ -107,9 +109,11 @@ describe('manifest()', () => {
     }));
 
     const expectedOutput = `
+            import { KiwiManifest } from "${packageName}";
+
             import * as $0 from "@/sections/products";
                 
-            const manifest = {
+            const manifest: KiwiManifest = {
                 sections: {
                     "@/sections/products": {
                         module: $0,
@@ -132,7 +136,7 @@ describe('manifest()', () => {
                         },
                     },
                 },
-                site: "@kiwi-app/kiwi-nextjs",
+                site: "${packageName}",
             };
             
             export default manifest;`;
@@ -177,9 +181,11 @@ describe('manifest()', () => {
     }));
 
     const expectedOutput = `
+            import { KiwiManifest } from "${packageName}";
+
             import * as $0 from "@/sections/products";
                 
-            const manifest = {
+            const manifest: KiwiManifest = {
                 sections: {
                     "@/sections/products": {
                         module: $0,
@@ -196,7 +202,7 @@ describe('manifest()', () => {
                         },
                     },
                 },
-                site: "@kiwi-app/kiwi-nextjs",
+                site: "${packageName}",
             };
             
             export default manifest;`;
@@ -247,9 +253,11 @@ describe('manifest()', () => {
     }));
 
     const expectedOutput = `
+            import { KiwiManifest } from "${packageName}";
+
             import * as $0 from "@/sections/header";
                 
-            const manifest = {
+            const manifest: KiwiManifest = {
                 sections: {
                     "@/sections/header": {
                         module: $0,
@@ -280,7 +288,7 @@ describe('manifest()', () => {
                         },
                     },
                 },
-                site: "@kiwi-app/kiwi-nextjs",
+                site: "${packageName}",
             };
             
             export default manifest;`;
@@ -333,10 +341,12 @@ describe('manifest()', () => {
     }));
 
     const expectedOutput = `
+            import { KiwiManifest } from "${packageName}";
+    
             import * as $0 from "@/sections/header";
             import * as $1 from "@/sections/content";
             
-            const manifest = {
+            const manifest: KiwiManifest = {
                 sections: {
                     "@/sections/header": {
                         module: $0,
@@ -362,7 +372,7 @@ describe('manifest()', () => {
                         },
                     },
                 },
-                site: "@kiwi-app/kiwi-nextjs",
+                site: "${packageName}",
             };
             
             export default manifest;`;
@@ -379,10 +389,11 @@ describe('manifest()', () => {
     fileSystem.ls.mockReturnValue([]);
 
     const expectedOutput = `
+            import { KiwiManifest } from "${packageName}";
 
-            const manifest = {
+            const manifest: KiwiManifest = {
                 sections: {},
-                site: "@kiwi-app/kiwi-nextjs",
+                site: "${packageName}",
             };
             
             export default manifest;`;
