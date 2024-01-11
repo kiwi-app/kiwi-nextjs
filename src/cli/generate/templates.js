@@ -9,28 +9,32 @@ const simpleSection = ({ module }) =>
     }
 
     const ${module} = ({ title }: ${module}Props) => (
-        <div>
+        <div style={{ width: '100%', margin: '0 auto', textAlign: 'center', padding: '2rem 1rem' }}>
             <h1>
                 This is the section ${module}! <br />
                 <small>Use KiwiAdmin to change 'title' value.</small>
             </h1>
-
+            
+            <br />
+            
+            <p>Current title value:</p>
             {title && (
-                <>
-                  <i>Current title value:</i>
-                  <RichTextComponent text={title} />
-                </>
+                <RichTextComponent text={title} />
             )}
 
-            <p>
-                You should edit this component but keep the base structure.<br /><br />
-                This file <b>MUST</b>:
+            <br />
+
+            <div>
+                <p>
+                    You should edit this component but keep the base structure.<br /><br />
+                    This file <b>MUST</b>:
+                </p>
                 <ul>
                     <li>export interface ${module}Props;</li>
                     <li>export default ${module};</li>
-                    <li>${module} receive ${module}Props;</li>
+                    <li>${module} receive ${module}Props as props</li>
                 </ul>
-            </p>
+            </div>
         </div>
     );
 
@@ -54,30 +58,36 @@ const loaderSection = ({ module }) =>
     }
 
     const ${module} = ({ title, loader, ...props }: ${module}Props) => (
-        <div>
+        <div style={{ width: '100%', margin: '0 auto', textAlign: 'center', padding: '2rem 1rem' }}>
             <h1>
                 This is the section ${module}! <br />
                 <small>Use KiwiAdmin to change 'title' value.</small>
             </h1>
 
-            <h2>You can see your loader metadata: {JSON.stringify(props)}</h2>
+            <br />
+            
+            <h2>Loader metadata:</h2>
+            <code>{JSON.stringify(props)}</code>
+            
+            <br />
+            <br />
 
-            <br />
-            <br />
             <h3>Current title value:</h3>
             {title && (
                 <RichTextComponent text={title} />
             )}
+            
+            <br />
 
-            <br />
-            <br />
             <h3>Loader info:</h3>
-            <p>
-            {loader?.random} + {loader?.number} = {loader?.sum}{' '}
-            </p>
+            {loader && (
+                <p>
+                    {loader?.random} + {loader?.number} = {loader?.sum}{' '}
+                </p>
+            )}
 
             <br />
-            <br />
+
             <div>
                 <p>
                     You should edit this component but keep the base structure.<br /><br />
@@ -86,9 +96,9 @@ const loaderSection = ({ module }) =>
                 <ul>
                     <li>export interface ${module}Props;</li>
                     <li>export default ${module};</li>
-                    <li>${module} receive ${module}Props;</li>
+                    <li>${module} receive ${module}Props as props</li>
                     <li>export async function Loader</li>
-                    <li>export async function Loading (optional to use Suspense)</li>
+                    <li>export async function Loading (optional for Suspense)</li>
                 </ul>
             </div>
         </div>

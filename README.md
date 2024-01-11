@@ -42,7 +42,7 @@ Start your project
 npm run dev
 ```
 
-Open [Kiwi Admin](https://kiwi-admin.vercel.app/), link your site and get the API Key:
+Open [Kiwi Admin](https://kiwi-admin.vercel.app), link your site and get the API Key:
 
 ![kiwi api key creation](docs/kiwi_api_key.gif)
 
@@ -50,7 +50,7 @@ Open [Kiwi Admin](https://kiwi-admin.vercel.app/), link your site and get the AP
 
 You should configure this lib by creating the following env vars:
 
-- KIWI_ADMIN_URL (ex: `https://kiwi-admin.vercel.app/`)
+- KIWI_ADMIN_URL (ex: `https://kiwi-admin.vercel.app`)
 - KIWI_API_KEY
 
 If you want to remove or change cache time, you can set `KIWI_CACHE_TTL` (in seconds) env var
