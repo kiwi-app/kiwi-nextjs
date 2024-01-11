@@ -200,17 +200,18 @@ function createPropSchema(modulePath) {
   const schema = createSchema(modulePath);
   const componentInterfaceName = getInterfaceNameByModuleName(moduleName, 'Props');
 
-  if (!Object.hasOwn(schema.definitions, componentInterfaceName)) {
-    throw new Error(`${moduleName}.tsx module needs to define ${componentInterfaceName} interface`);
-  }
+  const hasExportedInterface = Object.hasOwn(schema.definitions, componentInterfaceName);
+
+  if (!hasExportedInterface) return {};
 
   const componentRootSchema = schema.definitions[componentInterfaceName];
+
+  if (!componentRootSchema.properties) return {};
+
   const component = assembleSchema(schema, componentRootSchema);
   const loader = buildLoader(schema);
 
-  if (!loader) {
-    return { component };
-  }
+  if (!loader) return { component };
 
   return { component, loader };
 }

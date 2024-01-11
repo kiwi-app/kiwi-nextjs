@@ -452,6 +452,46 @@ describe('createPropSchema()', () => {
     expect(component.required).toEqual(desiredComponent.required);
   });
 
+  test('should return empty schema if [Module]Props interface is not defined', () => {
+    tsj.createGenerator.mockImplementationOnce(() => ({
+      createSchema: () => ({
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        definitions: {
+          LeadProps: {
+            type: 'object',
+            properties: { text: { type: 'string' } },
+            required: ['text'],
+            additionalProperties: false,
+          },
+        },
+      }),
+    }));
+
+    const modulePath = './src/sections/header.tsx';
+    const schema = createPropSchema(modulePath);
+
+    expect(Object.keys(schema).length).toBe(0);
+  });
+
+  test('should return empty schema if [Module]Props interface is empty', () => {
+    tsj.createGenerator.mockImplementationOnce(() => ({
+      createSchema: () => ({
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        definitions: {
+          HeaderProps: {
+            type: 'object',
+            additionalProperties: false,
+          },
+        },
+      }),
+    }));
+
+    const modulePath = './src/sections/header.tsx';
+    const schema = createPropSchema(modulePath);
+
+    expect(Object.keys(schema).length).toBe(0);
+  });
+
   test('should throw an exception case the modulePath is invalid', () => {
     expect(() => {
       createPropSchema();
@@ -469,27 +509,6 @@ describe('createPropSchema()', () => {
     });
     expect(() => {
       createPropSchema('./src/sections/header.tsx');
-    }).toThrow();
-  });
-
-  test('should throw an exception case the [Module]Props interface is not defined', () => {
-    tsj.createGenerator.mockImplementationOnce(() => ({
-      createSchema: () => ({
-        $schema: 'http://json-schema.org/draft-07/schema#',
-        definitions: {
-          LeadProps: {
-            type: 'object',
-            properties: { text: { type: 'string' } },
-            required: ['text'],
-            additionalProperties: false,
-          },
-        },
-      }),
-    }));
-
-    const modulePath = './src/sections/header.tsx';
-    expect(() => {
-      createPropSchema(modulePath);
     }).toThrow();
   });
 

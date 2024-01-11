@@ -67,7 +67,7 @@ export interface ExportedModule {
     Loading?: JSX.Element | Function;
     Loader?: (req: LoaderRequest, props: any) => Promise<any>;
   };
-  schema: { component: Schema; loader?: Schema };
+  schema: { component?: Schema; loader?: Schema };
 }
 
 export type SearchParams = { [key: string]: string | string[] | undefined };
