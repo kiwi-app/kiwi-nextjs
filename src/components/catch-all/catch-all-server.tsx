@@ -9,7 +9,7 @@ export type CatchAllServerProps = {
 
 export default function CatchAllServer({ page, manifest, children }: CatchAllServerProps) {
   return (
-    <div className="flex flex-col w-full justify-center">
+    <div className="twkn-flex twkn-flex-col twkn-w-full twkn-justify-center">
       {page?.sections?.map((section, idx) => {
         const id = `${section.type}-${idx}`;
         const module = manifest.sections[section.type].module;

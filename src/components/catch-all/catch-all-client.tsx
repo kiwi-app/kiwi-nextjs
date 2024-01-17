@@ -77,7 +77,7 @@ export default (options: KiwiOptions) => {
     };
 
     return (
-      <div className="flex flex-col w-full justify-center">
+      <div className="twkn-flex twkn-flex-col twkn-w-full twkn-justify-center">
         {page?.sections?.map((section) => {
           const id = section.id;
           const module = manifest.sections[section.type].module;
@@ -89,13 +89,13 @@ export default (options: KiwiOptions) => {
 
           if (!Component) return null;
           return (
-            <section key={id} id={id} className="relative">
+            <section key={id} id={id} className="twkn-relative">
               <div
                 className={`${
                   [selectedSectionId, hoveredSectionId].includes(id)
-                    ? 'border-2 border-blue-500 bg-blue-200/30'
-                    : 'bg-transparent'
-                } block absolute z-50 w-full inset-0 h-full hover:border-2 hover:border-blue-500 hover:bg-blue-200/30 cursor-pointer`}
+                    ? 'twkn-border-2 twkn-border-blue-500 twkn-bg-blue-200/30'
+                    : 'twkn-bg-transparent'
+                } twkn-block twkn-absolute twkn-z-50 twkn-w-full twkn-inset-0 twkn-h-full hover:twkn-border-2 hover:twkn-border-blue-500 hover:twkn-bg-blue-200/30 twkn-cursor-pointer`}
                 onMouseLeave={() => {
                   setHoveredSectionId(null);
 

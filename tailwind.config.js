@@ -1,5 +1,6 @@
 module.exports = {
-  content: ['./src/**/*.tsx'],
+  content: ['./src/components/**/*.tsx'],
+  prefix: 'twkn-',
   theme: {
     extend: {},
   },
