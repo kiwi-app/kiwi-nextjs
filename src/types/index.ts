@@ -1,3 +1,8 @@
+export interface DraftPage extends Page {
+  pageId?: string;
+  original?: Page;
+}
+
 export interface Page {
   id: string;
   siteId: string;

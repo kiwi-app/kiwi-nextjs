@@ -6,6 +6,7 @@ import {
   LoaderRequest,
   SectionProps,
   KiwiOptions,
+  DraftPage,
 } from '../types';
 import internalManifest from '../manifest';
 
@@ -115,23 +116,34 @@ export async function getLoaderProps(
   return newProps;
 }
 
-export const getPageConfig = async (site: string, page: string): Promise<Page | null> => {
+export const getPageConfig = async (
+  site: string,
+  options: { page: string; draftPageId: string },
+): Promise<Page | null> => {
   if (!KIWI_ADMIN_URL) throw 'kiwi admin url must be informed';
   if (!KIWI_API_KEY) throw 'kiwi api key must be informed';
 
-  try {
-    const request = await fetch(
-      `${KIWI_ADMIN_URL}/api/sites/${site}/page?page=${page.replace(/kiwi\/live(\/*)/g, '')}`,
-      {
+  const params = new URLSearchParams(options);
+
+  const isDraftPage = (params.get('kiwiDraftId') as string)?.length > 0;
+  const cacheConfig: RequestInit = isDraftPage
+    ? {
+        cache: 'no-cache',
+      }
+    : {
         // @ts-ignore
         next: {
           revalidate: Number(KIWI_CACHE_TTL),
         },
-        headers: {
-          'x-api-key': `${KIWI_API_KEY}`,
-        },
+      };
+
+  try {
+    const request = await fetch(`${KIWI_ADMIN_URL}/api/sites/${site}/pages?${params}`, {
+      ...cacheConfig,
+      headers: {
+        'x-api-key': `${KIWI_API_KEY}`,
       },
-    );
+    });
     const response = await request.json();
 
     return response.page;

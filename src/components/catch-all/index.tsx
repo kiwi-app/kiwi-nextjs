@@ -14,6 +14,7 @@ export default function KiwiCatchAll(
     const path = kiwi?.join('/') || '';
     const isLive = path.startsWith('kiwi/live');
     const mergedManifest = mergeManifests(options);
+    const draftPageId = (searchParams['kiwiDraftId'] as string) ?? '';
 
     const requestInfo: LoaderRequest = {
       searchParams,
@@ -31,7 +32,11 @@ export default function KiwiCatchAll(
       requestInfo.headers![key] = value;
     });
 
-    const page = await getPageConfig(mergedManifest.site, path);
+    const page = await getPageConfig(mergedManifest.site, {
+      page: path.replace(/kiwi\/live(\/*)/g, ''),
+      draftPageId,
+    });
+
     if (!page) return null;
 
     if (page.path.includes(':')) {
