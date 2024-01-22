@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "launch-editor": "^2.6.1",
-    "next": "^14.0.2",
+    "next": "^14.1.0",
     "prettier": "^2.8.8",
     "prompts": "^2.4.2",
     "react": "^18.0.0",

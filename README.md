@@ -1,6 +1,6 @@
 # kiwi-nextjs
 
-This project contains a CLI with two actions:
+This project contains a CLI with three actions:
 
 - `npx kiwi init`: configures folders and behaviors to integrate with admin app
 - `npx kiwi manifest`: generates a manifest file which contains all sections and loaders created locally in your project which will be displayed through the "CatchAll" component and used by **[kiwi admin](https://github.com/kiwi-app/kiwi-admin)** to display your sections and loaders with their props.

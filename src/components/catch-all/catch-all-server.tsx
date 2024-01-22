@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { KiwiManifest, Page } from '../../types';
+import type { KiwiManifest, Page } from '../../types';
 
 export type CatchAllServerProps = {
   page: Page;

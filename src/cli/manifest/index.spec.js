@@ -37,7 +37,7 @@ describe('manifest()', () => {
     }));
 
     const expectedOutput = `
-            import { KiwiManifest } from "${packageName}";
+            import type { KiwiManifest } from "${packageName}";
 
             import * as $0 from "@/sections/header";
             
@@ -109,7 +109,7 @@ describe('manifest()', () => {
     }));
 
     const expectedOutput = `
-            import { KiwiManifest } from "${packageName}";
+            import type { KiwiManifest } from "${packageName}";
 
             import * as $0 from "@/sections/products";
                 
@@ -181,7 +181,7 @@ describe('manifest()', () => {
     }));
 
     const expectedOutput = `
-            import { KiwiManifest } from "${packageName}";
+            import type { KiwiManifest } from "${packageName}";
 
             import * as $0 from "@/sections/products";
                 
@@ -253,7 +253,7 @@ describe('manifest()', () => {
     }));
 
     const expectedOutput = `
-            import { KiwiManifest } from "${packageName}";
+            import type { KiwiManifest } from "${packageName}";
 
             import * as $0 from "@/sections/header";
                 
@@ -341,7 +341,7 @@ describe('manifest()', () => {
     }));
 
     const expectedOutput = `
-            import { KiwiManifest } from "${packageName}";
+            import type { KiwiManifest } from "${packageName}";
     
             import * as $0 from "@/sections/header";
             import * as $1 from "@/sections/content";
@@ -389,7 +389,7 @@ describe('manifest()', () => {
     fileSystem.ls.mockReturnValue([]);
 
     const expectedOutput = `
-            import { KiwiManifest } from "${packageName}";
+            import type { KiwiManifest } from "${packageName}";
 
             const manifest: KiwiManifest = {
                 sections: {},

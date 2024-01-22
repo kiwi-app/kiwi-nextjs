@@ -48,7 +48,7 @@ async function manifest(args) {
     .join('\n');
 
   const output = `
-    import { KiwiManifest } from '${packageName}';
+    import type { KiwiManifest } from '${packageName}';
 
     ${imports}
 
