@@ -21,6 +21,7 @@ export default (options: KiwiOptions) => {
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
     const [hoveredSectionId, setHoveredSectionId] = useState<string | null>();
     const [useLocalSections, setUseLocalSections] = useState(false);
+    const [clickable, setClickable] = useState(false);
 
     const sectionsMap: Map<string, Section> = useMemo(() => {
       const map: Map<string, Section> = new Map();
@@ -48,6 +49,10 @@ export default (options: KiwiOptions) => {
 
         if (message.event === 'page-update') {
           updatePageWithLoaders(event.data.data.page);
+        }
+
+        if (message.event === 'ui') {
+          setClickable(event.data.data.clickable);
         }
       },
       [sectionsMap],
@@ -90,36 +95,38 @@ export default (options: KiwiOptions) => {
           if (!Component) return null;
           return (
             <section key={id} id={id} className="twkn-relative">
-              <div
-                className={`${
-                  [selectedSectionId, hoveredSectionId].includes(id)
-                    ? 'twkn-border-2 twkn-border-blue-500 twkn-bg-blue-200/30'
-                    : 'twkn-bg-transparent'
-                } twkn-block twkn-absolute twkn-z-50 twkn-w-full twkn-inset-0 twkn-h-full hover:twkn-border-2 hover:twkn-border-blue-500 hover:twkn-bg-blue-200/30 twkn-cursor-pointer`}
-                onMouseLeave={() => {
-                  setHoveredSectionId(null);
+              {!clickable && (
+                <div
+                  className={`${
+                    [selectedSectionId, hoveredSectionId].includes(id)
+                      ? 'twkn-border-2 twkn-border-blue-500 twkn-bg-blue-200/30'
+                      : 'twkn-bg-transparent'
+                  } twkn-block twkn-absolute twkn-z-50 twkn-w-full twkn-inset-0 twkn-h-full hover:twkn-border-2 hover:twkn-border-blue-500 hover:twkn-bg-blue-200/30 twkn-cursor-pointer`}
+                  onMouseLeave={() => {
+                    setHoveredSectionId(null);
 
-                  postMessage.send('hover', {
-                    sectionId: null,
-                  });
-                }}
-                onMouseEnter={() => {
-                  setHoveredSectionId(id);
+                    postMessage.send('hover', {
+                      sectionId: null,
+                    });
+                  }}
+                  onMouseEnter={() => {
+                    setHoveredSectionId(id);
 
-                  postMessage.send('hover', {
-                    sectionId: id,
-                  });
-                }}
-                onClick={() => {
-                  setHoveredSectionId(id);
-                  setSelectedSectionId(id);
+                    postMessage.send('hover', {
+                      sectionId: id,
+                    });
+                  }}
+                  onClick={() => {
+                    setHoveredSectionId(id);
+                    setSelectedSectionId(id);
 
-                  postMessage.send('click', {
-                    sectionId: id,
-                    section: section,
-                  });
-                }}
-              />
+                    postMessage.send('click', {
+                      sectionId: id,
+                      section: section,
+                    });
+                  }}
+                />
+              )}
               <Suspense fallback={SuspenseFallback}>
                 {
                   // @ts-ignore
