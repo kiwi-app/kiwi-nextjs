@@ -14,7 +14,7 @@ export interface Page {
 
 export interface LiveEditorMessage {
   type: string;
-  event: 'hover-section' | 'click-section' | 'remove-section' | 'page-update' | 'ui';
+  event: 'hover-section' | 'click-section' | 'remove-section' | 'page-update' | 'live-controls';
   data: { [key: string]: any };
 }
 

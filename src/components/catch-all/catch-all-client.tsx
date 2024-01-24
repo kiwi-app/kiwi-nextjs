@@ -21,7 +21,7 @@ export default (options: KiwiOptions) => {
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>();
     const [hoveredSectionId, setHoveredSectionId] = useState<string | null>();
     const [useLocalSections, setUseLocalSections] = useState(false);
-    const [clickable, setClickable] = useState(false);
+    const [liveControls, setLiveControls] = useState(true);
 
     const sectionsMap: Map<string, Section> = useMemo(() => {
       const map: Map<string, Section> = new Map();
@@ -51,8 +51,8 @@ export default (options: KiwiOptions) => {
           updatePageWithLoaders(event.data.data.page);
         }
 
-        if (message.event === 'ui') {
-          setClickable(event.data.data.clickable);
+        if (message.event === 'live-controls') {
+          setLiveControls(event.data.data.liveControls);
         }
       },
       [sectionsMap],
@@ -95,7 +95,7 @@ export default (options: KiwiOptions) => {
           if (!Component) return null;
           return (
             <section key={id} id={id} className="twkn-relative">
-              {!clickable && (
+              {liveControls && (
                 <div
                   className={`${
                     [selectedSectionId, hoveredSectionId].includes(id)
